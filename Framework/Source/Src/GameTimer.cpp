@@ -1,25 +1,18 @@
-#include <Windows.h>
+#include <raylib.h>
 
-#include "GameAssert.h"
-#include "GameTimer.h"
+#include <GameTimer.h>
 
 GameTimer::GameTimer()
-	: _secondsPerCount(0.0)
-	, _deltaTime(-1.0)
-	, _baseTime(0)
+	: _baseTime(0.0)
 	, _pausedTime(0)
+	, _stopTime(0)
 	, _prevTime(0)
 	, _currTime(0)
-	, _bIsStopped(false)
-{
-	int64_t countsPerSec = 0LL;
-	CHECK(QueryPerformanceFrequency(reinterpret_cast<LARGE_INTEGER*>(&countsPerSec)));
-	_secondsPerCount = 1.0 / static_cast<double>(countsPerSec);
-}
+	, _deltaTime(-1.0)
+	, _bIsStopped(false) {}
 
 GameTimer::GameTimer(GameTimer&& instance) noexcept
-	: _secondsPerCount(instance._secondsPerCount)
-	, _deltaTime(instance._deltaTime)
+	: _deltaTime(instance._deltaTime)
 	, _baseTime(instance._baseTime)
 	, _pausedTime(instance._pausedTime)
 	, _prevTime(instance._prevTime)
@@ -27,8 +20,7 @@ GameTimer::GameTimer(GameTimer&& instance) noexcept
 	, _bIsStopped(instance._bIsStopped) {}
 
 GameTimer::GameTimer(const GameTimer& instance) noexcept
-	: _secondsPerCount(instance._secondsPerCount)
-	, _deltaTime(instance._deltaTime)
+	: _deltaTime(instance._deltaTime)
 	, _baseTime(instance._baseTime)
 	, _pausedTime(instance._pausedTime)
 	, _prevTime(instance._prevTime)
@@ -38,13 +30,9 @@ GameTimer::GameTimer(const GameTimer& instance) noexcept
 float GameTimer::GetTotalSeconds() const
 {
 	if (_bIsStopped)
-	{
-		return static_cast<float>(((_stopTime - _pausedTime) - _baseTime) * _secondsPerCount);
-	}
+		return static_cast<float>((_stopTime - _pausedTime) - _baseTime);
 	else
-	{
-		return static_cast<float>(((_currTime - _pausedTime) - _baseTime) * _secondsPerCount);
-	}
+		return static_cast<float>((_currTime - _pausedTime) - _baseTime);
 }
 
 float GameTimer::GetDeltaSeconds() const
@@ -54,43 +42,34 @@ float GameTimer::GetDeltaSeconds() const
 
 void GameTimer::Reset()
 {
-	int64_t currTime = 0LL;
-	CHECK(QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&currTime)));
+	double currTime = GetTime();
 
 	_baseTime = currTime;
 	_prevTime = currTime;
-	_stopTime = 0;
+	_stopTime = 0.0;
+	_pausedTime = 0.0;
 	_bIsStopped = false;
 }
 
 void GameTimer::Start()
 {
 	if (!_bIsStopped)
-	{
 		return;
-	}
 
-	int64_t startTime = 0LL;
-	CHECK(QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&startTime)));
+	double startTime = GetTime();
 
 	_pausedTime += (startTime - _stopTime);
-
 	_prevTime = startTime;
-	_stopTime = 0;
+	_stopTime = 0.0;
 	_bIsStopped = false;
 }
 
 void GameTimer::Stop()
 {
 	if (_bIsStopped)
-	{
 		return;
-	}
 
-	int64_t currTime = 0LL;
-	CHECK(QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&currTime)));
-
-	_stopTime = currTime;
+	_stopTime = GetTime();
 	_bIsStopped = true;
 }
 
@@ -102,15 +81,10 @@ void GameTimer::Tick()
 		return;
 	}
 
-	int64_t currTime = 0LL;
-	CHECK(QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&currTime)));
-	_currTime = currTime;
-
-	_deltaTime = (_currTime - _prevTime) * _secondsPerCount;
+	_currTime = GetTime();
+	_deltaTime = (_currTime - _prevTime);
 	_prevTime = _currTime;
 
 	if (_deltaTime < 0.0)
-	{
 		_deltaTime = 0.0;
-	}
 }

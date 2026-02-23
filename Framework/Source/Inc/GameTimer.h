@@ -19,14 +19,12 @@ public:
 	void Tick();
 
 private:
-	double _secondsPerCount = 0.0;
+	double _baseTime = 0.0;
+	double _pausedTime = 0.0;
+	double _stopTime = 0.0;
+	double _prevTime = 0.0;
+	double _currTime = 0.0;
 	double _deltaTime = 0.0;
-
-	int64_t _baseTime = 0LL;
-	int64_t _pausedTime = 0LL;
-	int64_t _stopTime = 0LL;
-	int64_t _prevTime = 0LL;
-	int64_t _currTime = 0LL;
 
 	bool _bIsStopped = false;
 };
