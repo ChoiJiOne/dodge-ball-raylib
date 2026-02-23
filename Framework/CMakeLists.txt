@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.27)
 # 프레임위크 세팅 전 서드파티 라이브러리 세팅
 add_subdirectory(ThirdParty)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 

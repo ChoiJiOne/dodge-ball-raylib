@@ -1,7 +1,7 @@
+#include <format>
 #include <windows.h>
 
 #include "Error.h"
-#include "StringUtils.h"
 
 Error::Error(const EErrorCode& code, const std::string& message, const char* file, int32_t line, const char* func)
 	: _code(code)
@@ -69,7 +69,7 @@ std::string Error::GetWindowsErrorMessage(uint32_t errorCode)
 	DWORD size = FormatMessageA(dwFlags, nullptr, errorCode, dwLanguageId, &errorMsgBuffer[0], ERROR_MSG_STRING_BUFFER_SIZE, nullptr);
 	if (size == 0)
 	{
-		return StringUtils::PrintF("Unknown Windows error (code=%u)", errorCode);
+		return std::format("Unknown Windows error (code=%u)", errorCode);
 	}
 
 	return std::string(errorMsgBuffer, size);

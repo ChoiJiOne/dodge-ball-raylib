@@ -1,6 +1,6 @@
 #include <Windows.h>
 
-#include "GenericAssert.h"
+#include "GameAssert.h"
 #include "InputManager.h"
 
 Result<void> InputManager::Startup()

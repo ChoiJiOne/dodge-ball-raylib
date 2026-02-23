@@ -1,7 +1,6 @@
 #pragma once
 
-#include "ErrorUtils.h"
-#include "StringUtils.h"
+#include <DebugBreak.h>
 
 #if defined(DEBUG_MODE) || defined(REL_WITH_DEB_INFO_MODE) || defined(RELEASE_MODE)
 #ifndef CHECK
@@ -9,8 +8,7 @@
 {\
 	if(!(bool)(EXP))\
 	{\
-		ReportAssertion(#EXP, __FILE__, __LINE__);\
-		__debugbreak();\
+		debug_break();\
 	}\
 }
 #endif
@@ -19,8 +17,7 @@
 {\
 	if(!(bool)(EXP))\
 	{\
-		ReportAssertion(#EXP, __FILE__, __LINE__, StringUtils::PrintF(__VA_ARGS__));\
-		__debugbreak();\
+		debug_break();\
 	}\
 }
 #endif
