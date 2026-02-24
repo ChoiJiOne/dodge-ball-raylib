@@ -18,9 +18,6 @@ public:
 	Result<void> Shutdown();
 
 private:
-	void UpdateTick(InputManager* inputMgr);
-
-private:
 	bool _isInitialized = false;
 	bool _isQuit = false;
 

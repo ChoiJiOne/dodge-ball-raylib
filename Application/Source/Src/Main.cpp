@@ -1,72 +1,28 @@
-//#include "AppHost.h"
-//#include "App.h"
-//
-//int main(int argc, char* argv[])
-//{
-//	AppHost appHost;
-//	App app;
-//
-//	// CHECKME: 여기 main 엔트리 포인트 이후에 점검 필요
-//	Result<void> result = appHost.Startup();
-//	if (!result.IsSuccess())
-//	{
-//		return 0; // NOTE: 여기에 뭔가 로그라도 찍어줘야 하지 않을까...?
-//	}
-//
-//	result = appHost.Run(app);
-//	if (!result.IsSuccess())
-//	{
-//		return 0; // NOTE: 여기에 뭔가 로그라도 찍어줘야 하지 않을까...?
-//	}
-//
-//	result = appHost.Shutdown();
-//	if (!result.IsSuccess())
-//	{
-//		return 0; // NOTE: 여기에 뭔가 로그라도 찍어줘야 하지 않을까...?
-//	}
-//
-//	return 0;
-//}
+#include "AppHost.h"
+#include "App.h"
+#include "Utils/LogUtils.h"
 
-
-#include <raylib.h>
-
-int main(void)
+int main(int argc, char* argv[])
 {
-	const int screenWidth = 800;
-	const int screenHeight = 450;
-
-	InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
-	SetTargetFPS(60);
-
-	while (!WindowShouldClose())
+	AppHost appHost;
+	if (Result<void> result = appHost.Startup(); !result.IsSuccess())
 	{
-		BeginDrawing();
-
-		ClearBackground(RAYWHITE);
-
-		if (GetKeyStateEx(KEY_A) == KEY_STATE_NONE)
-		{
-			TraceLog(LOG_ERROR, "STATE_NONE");
-		}
-		else if (GetKeyStateEx(KEY_A) == KEY_STATE_PRESSED)
-		{
-			TraceLog(LOG_ERROR, "STATE_PRESSED");
-		}
-		else if (GetKeyStateEx(KEY_A) == KEY_STATE_HELD)
-		{
-			TraceLog(LOG_ERROR, "STATE_HELD");
-		}
-		else if (GetKeyStateEx(KEY_A) == KEY_STATE_RELEASED)
-		{
-			TraceLog(LOG_ERROR, "STATE_RELEASED");
-		}
-
-		DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
-
-		EndDrawing();
+		LOG_E("FAILED_TO_STARTUP_APP_HOST");
+		return -1;
 	}
 
-	CloseWindow();
+	App app;
+	if (Result<void> result = appHost.Run(app); !result.IsSuccess())
+	{
+		LOG_E("FAILED_TO_RUN_APP_HOST");
+		return -1;
+	}
+
+	if (Result<void> result = appHost.Shutdown(); !result.IsSuccess())
+	{
+		LOG_E("FAILED_TO_SHUTDOWN_APP_HOST");
+		return -1;
+	}
+
 	return 0;
 }

@@ -1,33 +1,32 @@
+#include <raylib.h>
+
 #include "AppHost.h"
 
 AppHost::~AppHost()
 {
 	if (_isInitialized)
-	{
 		Shutdown();
-	}
 }
 
 Result<void> AppHost::Startup()
 {
 	if (_isInitialized)
-	{
 		return Result<void>::Fail(MAKE_ERROR(EErrorCode::ALREADY_INITIALIZED, "FAILED_TO_STARTUP_FRAMEWORK_APP"));
-	}
+
+	// 여기 임시 코드. 삭제 예정.
+	const int screenWidth = 800;
+	const int screenHeight = 450;
+
+	InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+	SetTargetFPS(60);
 
 	InputManager& inputMgr = InputManager::Get();
-	Result<void> resultInputMgrStartup = inputMgr.Startup();
-	if (!resultInputMgrStartup.IsSuccess())
-	{
-		return resultInputMgrStartup;
-	}
+	if (Result<void> result = inputMgr.Startup(); !result.IsSuccess())
+		return result;
 
 	ActorManager& actorMgr = ActorManager::Get();
-	Result<void> resultActorMgrStartup = actorMgr.Startup();
-	if (!resultActorMgrStartup.IsSuccess())
-	{
-		return resultActorMgrStartup;
-	}
+	if (Result<void> result = actorMgr.Startup(); !result.IsSuccess())
+		return result;
 
 	_isInitialized = true;
 	return Result<void>::Success();
@@ -38,26 +37,20 @@ Result<void> AppHost::Run(IApp& app)
 	AppContext ctx(ActorManager::GetPtr(), InputManager::GetPtr());
 	ctx.SetRequestQuit([this]() { _isQuit = true; });
 
-	Result<void> resultStartup = app.OnStartup(ctx);
-	if (!resultStartup.IsSuccess())
-	{
-		return resultStartup;
-	}
+	if (Result<void> result = app.OnStartup(ctx); !result.IsSuccess())
+		return result;
 
 	while (!_isQuit)
 	{
-		UpdateTick(ctx.GetInputManager());
+		_timer.Tick();
 		app.OnPreTick(ctx, _timer.GetDeltaSeconds());
 		app.OnTick(ctx, _timer.GetDeltaSeconds());
 		app.OnPostTick(ctx, _timer.GetDeltaSeconds());
 		app.OnRender(ctx);
 	}
 
-	Result<void> resultShutdown = app.OnShutdown(ctx);
-	if (!resultShutdown.IsSuccess())
-	{
-		return resultShutdown;
-	}
+	if (Result<void> result = app.OnShutdown(ctx); !result.IsSuccess())
+		return result;
 
 	return Result<void>::Success();
 }
@@ -65,29 +58,18 @@ Result<void> AppHost::Run(IApp& app)
 Result<void> AppHost::Shutdown()
 {
 	if (!_isInitialized)
-	{
 		return Result<void>::Fail(MAKE_ERROR(EErrorCode::NOT_INITIALIZED, "FAILED_TO_SHUTDOWN_FRAMEWORK_APP"));
-	}
+	
+	InputManager& inputMgr = InputManager::Get();
+	if (Result<void> result = inputMgr.Shutdown(); !result.IsSuccess())
+		return result;
 
 	ActorManager& actorMgr = ActorManager::Get();
-	Result<void> resultActorMgrShutdown = actorMgr.Shutdown();
-	if (!resultActorMgrShutdown.IsSuccess())
-	{
-		return resultActorMgrShutdown;
-	}
+	if (Result<void> result = actorMgr.Shutdown(); !result.IsSuccess())
+		return result;
 
-	InputManager& inputMgr = InputManager::Get();
-	Result<void> resultInputMgrShutdown = inputMgr.Shutdown();
-	if (!resultInputMgrShutdown.IsSuccess())
-	{
-		return resultInputMgrShutdown;
-	}
+	CloseWindow();
 
 	_isInitialized = false;
 	return Result<void>::Success();
-}
-
-void AppHost::UpdateTick(InputManager* inputMgr)
-{
-	_timer.Tick();
 }

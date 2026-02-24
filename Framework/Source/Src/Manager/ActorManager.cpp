@@ -3,9 +3,7 @@
 Result<void> ActorManager::Startup()
 {
 	if (_isInitialized)
-	{
 		return Result<void>::Fail(MAKE_ERROR(EErrorCode::ALREADY_INITIALIZED, "FAILED_TO_STARTUP_ACTOR_MANAGER"));
-	}
 
 	_isInitialized = true;
 	return Result<void>::Success();
@@ -14,18 +12,14 @@ Result<void> ActorManager::Startup()
 Result<void> ActorManager::Shutdown()
 {
 	if (!_isInitialized)
-	{
 		return Result<void>::Fail(MAKE_ERROR(EErrorCode::NOT_INITIALIZED, "FAILED_TO_SHUTDOWN_ACTOR_MANAGER"));
-	}
 
 	for (size_t idx = 0; idx < _actorPool.size(); ++idx)
 	{
 		if (_actorPool[idx].actor)
 		{
 			if (_actorPool[idx].actor->IsInitialized())
-			{
 				_actorPool[idx].actor->Release();
-			}
 
 			_actorPool[idx].actor.reset();
 			_actorPool[idx].isOccupied = false;

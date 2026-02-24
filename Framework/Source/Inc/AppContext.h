@@ -17,9 +17,7 @@ public:
 	void RequestQuit() const
 	{
 		if (_requestQuit)
-		{
 			_requestQuit();
-		}
 	}
 
 	ActorManager* GetActorManager() const { return _actorMgr; }
