@@ -1,7 +1,7 @@
 #pragma once
 
-#include "AppContext.h"
-#include "IApp.h"
+#include "App/AppContext.h"
+#include "APP/IApp.h"
 
 class App : public IApp
 {
