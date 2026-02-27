@@ -1,6 +1,7 @@
 #pragma once
 
-#include "IManager.h"
+#include "Config/IConfig.h"
+#include "Manager/IManager.h"
 
 class ConfigManager : public IManager<ConfigManager>
 {
@@ -11,8 +12,14 @@ public:
 	virtual Result<void> Shutdown() override;
 
 private:
+	bool LoadConfigFromFile(const std::string& filePath, IConfig& outConfig);
+
+private:
 	friend class IManager<ConfigManager>;
 
 	ConfigManager() = default;
 	virtual ~ConfigManager() = default;
+
+private:
+	
 };

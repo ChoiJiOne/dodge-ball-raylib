@@ -1,4 +1,6 @@
 #include "Manager/ConfigManager.h"
+#include "Utils/LogUtils.h"
+#include "Macro/Macro.h"
 
 Result<void> ConfigManager::Startup()
 {
@@ -16,4 +18,18 @@ Result<void> ConfigManager::Shutdown()
 
 	_isInitialized = false;
 	return Result<void>::Success();
+}
+
+bool ConfigManager::LoadConfigFromFile(const std::string& filePath, IConfig& outConfig)
+{
+	try
+	{
+		YAML::Node node = YAML::LoadFile(filePath);
+		return outConfig.TryParse(node);
+	}
+	catch (const YAML::Exception& e)
+	{
+		LOG_E("FAILED_TO_LOAD_CONFIG_FROM_FILE(path:{0})", filePath);
+		return false;
+	}
 }
