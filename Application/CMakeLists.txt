@@ -19,7 +19,7 @@ add_executable(${GAME_PROJECT_NAME} ${GAME_SOURCE} ${GAME_HEADER_FILE} ${GAME_SO
 
 target_include_directories(${GAME_PROJECT_NAME} PUBLIC ${GAME_PROJECT_HEADER_FILE_PATH} ${GAME_PROJECT_SOURCE_FILE_PATH})
 set_target_properties(${GAME_PROJECT_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
-target_link_libraries(${GAME_PROJECT_NAME} PUBLIC Framework)
+target_link_libraries(${GAME_PROJECT_NAME} PUBLIC Engine)
 target_compile_definitions(
     ${GAME_PROJECT_NAME}
     PUBLIC
