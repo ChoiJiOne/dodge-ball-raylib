@@ -5,7 +5,7 @@
 Result<void> ConfigManager::Startup()
 {
 	if (_isInitialized)
-		return Result<void>::Fail(MAKE_ERROR(EErrorCode::ALREADY_INITIALIZED, "FAILED_TO_STARTUP_RENDER_MANAGER"));
+		return Result<void>::Fail(MAKE_ERROR(EErrorCode::ALREADY_INITIALIZED, "FAILED_TO_STARTUP_CONFIG_MANAGER"));
 
 	_isInitialized = true;
 	return Result<void>::Success();
@@ -14,7 +14,13 @@ Result<void> ConfigManager::Startup()
 Result<void> ConfigManager::Shutdown()
 {
 	if (!_isInitialized)
-		return Result<void>::Fail(MAKE_ERROR(EErrorCode::NOT_INITIALIZED, "FAILED_TO_SHUTDOWN_RENDER_MANAGER"));
+		return Result<void>::Fail(MAKE_ERROR(EErrorCode::NOT_INITIALIZED, "FAILED_TO_SHUTDOWN_CONFIG_MANAGER"));
+
+	for (auto& configKeyValue : _configMap)
+	{
+		const std::string& configKey = configKeyValue.first;
+		Destroy(configKey);
+	}
 
 	_isInitialized = false;
 	return Result<void>::Success();
@@ -22,7 +28,14 @@ Result<void> ConfigManager::Shutdown()
 
 void ConfigManager::Destroy(const std::string& key)
 {
+	auto iter = _configMap.find(key);
+	if (iter == _configMap.end())
+		return;
 
+	iter->second.release();
+	iter->second = nullptr;
+
+	_configMap.erase(key);
 }
 
 bool ConfigManager::LoadConfigFromFile(const std::string& filePath, IConfig* outConfig)

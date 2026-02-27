@@ -42,6 +42,10 @@ public:
 	template <typename TConfig>
 	TConfig* GetConfig(const std::string& key)
 	{
+		const auto& iter = _configMap.find(key);
+		if (iter != _configMap.end())
+			return reinterpret_cast<TConfig*>(iter->second.get());
+
 		return nullptr;
 	}
 
