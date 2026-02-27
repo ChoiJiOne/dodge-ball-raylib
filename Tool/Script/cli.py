@@ -1,7 +1,8 @@
 import click
 
 from cmake_helper import CMakeHelper
-from config import SolutionConfig, BuildConfig, PackageConfig
+from data_pack_generator import DataPackGenerator
+from config import SolutionConfig, BuildConfig, PackageConfig, DataPackConfig
 
 @click.group()
 def cli():
@@ -54,6 +55,23 @@ def package(**kwargs):
             logger.error(f"Build Failed: {e}")
         else:
             print(f"Build Failed: {e}")
+
+@cli.command()
+@click.option("--target_path", required=True)
+@click.option("--target_name", required=True)
+@click.option("--output_path", required=True)
+@click.option("--log-file-path", required=True)
+def generate_data_pack(**kwargs):
+    logger = None
+    try:
+        data_pack_generator = DataPackGenerator(DataPackConfig, **kwargs)
+        logger = data_pack_generator.get_logger()
+        data_pack_generator.run_generate()
+    except Exception as e:
+        if logger:
+            logger.error(f"Generate Data Pack Failed: {e}")
+        else:
+            print(f"Generate Data Pack Failed: {e}")
 
 if __name__ == "__main__":
     cli()

@@ -18,6 +18,14 @@ class PackageConfig:
     log_file_path: str
     need_build: bool # 패키징 전에 빌드 여부 확인
 
+
+@dataclass
+class DataPackConfig:
+    target_path: str # 데이터 팩 대상 경로
+    target_name: str # 데이터 팩 이름
+    output_path: str # 데이터 팩 출력 경로 
+    log_file_path: str
+
 def filter_dict_for_dataclass(cls, data):
     cls_field_names = {f.name for f in fields(cls)}
     return {k: v for k, v in data.items() if k in cls_field_names}
