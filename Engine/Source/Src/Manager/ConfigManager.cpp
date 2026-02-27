@@ -34,8 +34,6 @@ void ConfigManager::Destroy(const std::string& key)
 
 	iter->second.release();
 	iter->second = nullptr;
-
-	_configMap.erase(key);
 }
 
 bool ConfigManager::LoadConfigFromFile(const std::string& filePath, IConfig* outConfig)
