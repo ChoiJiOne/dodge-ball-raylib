@@ -24,11 +24,10 @@ add_library(${ENGINE_PROJECT_NAME} STATIC
 target_include_directories(${ENGINE_PROJECT_NAME} PUBLIC ${ENGINE_PROJECT_HEADER_FILE_PATH} ${ENGINE_PROJECT_SOURCE_FILE_PATH})
 target_link_libraries(
     ${ENGINE_PROJECT_NAME} PUBLIC
-    Pathcch.lib 
-    Shlwapi.lib
     raylib 
     yaml-cpp::yaml-cpp
     msgpack-cxx
+    
 )
 target_compile_definitions(
     ${ENGINE_PROJECT_NAME}
