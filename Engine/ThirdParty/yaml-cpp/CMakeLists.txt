@@ -84,12 +84,16 @@ set(backport-msvc-runtime $<VERSION_LESS:${CMAKE_VERSION},3.15>)
 add_library(yaml-cpp ${yaml-cpp-type} "")
 add_library(yaml-cpp::yaml-cpp ALIAS yaml-cpp)
 
-set_property(TARGET yaml-cpp
-  PROPERTY
-    MSVC_RUNTIME_LIBRARY ${CMAKE_MSVC_RUNTIME_LIBRARY})
+# set_property(TARGET yaml-cpp
+#   PROPERTY
+#     MSVC_RUNTIME_LIBRARY ${CMAKE_MSVC_RUNTIME_LIBRARY})
 set_property(TARGET yaml-cpp
   PROPERTY
     CXX_STANDARD_REQUIRED ON)
+set_property(TARGET yaml-cpp 
+  PROPERTY 
+  MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
 
 if (NOT YAML_BUILD_SHARED_LIBS)
       set_property(TARGET yaml-cpp PROPERTY POSITION_INDEPENDENT_CODE ${YAML_ENABLE_PIC})
