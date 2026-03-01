@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 
+#include <msgpack.hpp>
+
 struct TestDataPack
 {
     int32_t A;

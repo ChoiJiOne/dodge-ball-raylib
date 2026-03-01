@@ -88,7 +88,7 @@ class DataPackGenerator:
                 return
             properties += f"    {cpp_data_type} {data_name};\n"
     
-        header_file = f'''#pragma once
+        data_pack_header_file = f'''#pragma once
 
 #include <cstdint>
 #include <vector>
@@ -102,12 +102,28 @@ struct {target_name}DataPack
     MSGPACK_DEFINE({msgpack_define});
 }};
 '''
+        data_chunk_header_file = f'''#pragma once
+
+#include "{target_name}DataPack.generated.h"
+
+struct {target_name}DataChunk
+{{
+    std::vector<{target_name}DataPack> DataPacks;
+}};
+'''
         header_file_name = f"{target_name}DataPack.generated.h"
         app_header_file_path = os.path.join(self.config.output_app_header_path, header_file_name)
-        self.make_data_pack_header_file(app_header_file_path, header_file)
+        self.make_data_pack_header_file(app_header_file_path, data_pack_header_file)
 
         tool_header_file_path = os.path.join(self.config.output_tool_header_path, header_file_name)
-        self.make_data_pack_header_file(tool_header_file_path, header_file)
+        self.make_data_pack_header_file(tool_header_file_path, data_pack_header_file)
+
+        data_chunk_header_file_name = f"{target_name}DataChunk.generated.h"
+        app_data_chunk_header_file_path = os.path.join(self.config.output_app_header_path, data_chunk_header_file_name)
+        self.make_data_pack_header_file(app_data_chunk_header_file_path, data_chunk_header_file)
+
+        tool_data_chunk_header_file_path = os.path.join(self.config.output_tool_header_path, data_chunk_header_file_name)
+        self.make_data_pack_header_file(tool_data_chunk_header_file_path, data_chunk_header_file)
 
     def make_data_pack_header_file(self, header_file_path, header_file):
         with open(header_file_path, mode='w', encoding='utf-8') as f:
