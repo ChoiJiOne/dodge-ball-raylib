@@ -18,12 +18,12 @@ class PackageConfig:
     log_file_path: str
     need_build: bool # 패키징 전에 빌드 여부 확인
 
-
 @dataclass
 class DataPackConfig:
-    target_path: str # 데이터 팩 대상 경로
+    target_csv_path: str # CSV 타겟 경로
     target_name: str # 데이터 팩 이름
-    output_path: str # 데이터 팩 출력 경로 
+    output_app_header_path: str # 앱 헤더 파일 출력 경로
+    output_tool_header_path: str # 툴 헤더 파일 출력 경로
     log_file_path: str
 
 def filter_dict_for_dataclass(cls, data):
