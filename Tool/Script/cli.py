@@ -70,9 +70,9 @@ def generate_data_pack_header(**kwargs):
         data_pack_generator.run_generate_header()
     except Exception as e:
         if logger:
-            logger.error(f"Generate Data Pack Failed: {e}")
+            logger.error(f"Generate Data Pack Header Failed: {e}")
         else:
-            print(f"Generate Data Pack Failed: {e}")
+            print(f"Generate Data Pack Header Failed: {e}")
 
 if __name__ == "__main__":
     cli()
