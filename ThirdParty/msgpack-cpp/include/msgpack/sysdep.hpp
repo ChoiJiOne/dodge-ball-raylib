@@ -56,6 +56,8 @@
 #       if !defined(WIN32_LEAN_AND_MEAN)
 #           define WIN32_LEAN_AND_MEAN
 #       endif /* WIN32_LEAN_AND_MEAN */
+#define NOGDI             // All GDI defines and routines
+#define NOUSER            // All USER defines and routines
 #   endif
     typedef long _msgpack_atomic_counter_t;
 #if defined(_AMD64_) || defined(_M_X64) || defined(_M_ARM64)
