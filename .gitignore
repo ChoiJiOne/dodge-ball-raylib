@@ -20,7 +20,6 @@ Build
 
 # 파이썬 관련 설정
 .venv
-.vscode
 __pycache__
 
 # 기타 커밋하지 말아야 할 파일
