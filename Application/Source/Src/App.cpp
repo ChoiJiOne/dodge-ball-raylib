@@ -2,12 +2,32 @@
 
 #include "App.h"
 
+//#include "DataPack/TestDataPack.generated.h"
+#include "DataPack/TestDataChunk.h"
+
+//#include <iostream>
+//#include <fstream>
+//#include <vector>
+//#include <msgpack.hpp>
+
+
 App::App() 
 {
 }
 
 Result<void> App::OnStartup(const AppContext& appCtx)
 {
+	std::string inputFilePath = "Resource/TestData.bytes";
+
+	int32_t dataSize = 0;
+	uint8_t* fileData = LoadFileData(inputFilePath.c_str(), &dataSize);
+
+	msgpack::object_handle oh = msgpack::unpack(reinterpret_cast<const char*>(fileData), dataSize);
+	msgpack::object deserialized = oh.get();
+
+	TestDataChunk loadedData;
+	deserialized.convert(loadedData);
+
 	return Result<void>::Success();
 }
 
