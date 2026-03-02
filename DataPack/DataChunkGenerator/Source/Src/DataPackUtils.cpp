@@ -7,16 +7,16 @@
 
 bool DataPackUtils::ParseBool(const std::string& fieldValue)
 {
-	std::string boolValue = fieldValue;
-	std::transform(fieldValue.begin(), fieldValue.end(), boolValue.begin(), [](uint8_t c) { return std::tolower(c); });
+	std::string value = fieldValue;
+	std::transform(fieldValue.begin(), fieldValue.end(), value.begin(), [](uint8_t c) { return std::tolower(c); });
 
-	if (fieldValue == STRING_VALUE_TRUE)
+	if (value == STRING_VALUE_TRUE)
 		return true;
 
-	if (fieldValue == STRING_VALUE_FALSE)
+	if (value == STRING_VALUE_FALSE)
 		return false;
 
-	std::cout << "Invalid bool type value: " << fieldValue << std::endl;
+	std::cout << "Invalid bool type value: " << value << std::endl;
 	return false;
 }
 
