@@ -129,8 +129,9 @@ namespace csv {
     template<typename F, typename... Args>
     using invoke_result_t = typename std::invoke_result<F, Args...>::type;
 #else
-    template<typename F, typename... Args>
-    using invoke_result_t = typename std::result_of<F(Args...)>::type;
+    //NOTE: C++20 표준 사용 시 이 부분 주석처리 안하면 컴파일 에러 발생. (향후 원인 파악 필요)
+	//template<typename F, typename... Args>
+	//using invoke_result_t = typename std::result_of<F(Args...)>::type;
 #endif
 
     // Resolves g++ bug with regard to constexpr methods
