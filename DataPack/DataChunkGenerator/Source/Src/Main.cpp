@@ -1,6 +1,7 @@
 #include <format>
 #include <iostream>
 
+#include "DataChunkUtils.h"
 #include "DataPackUtils.h"
 
 #include "TestDataChunk.h"
@@ -11,7 +12,7 @@ void GenerateTestDataChunk(const std::string dataName)
 {
 	TestDataChunk testDataChunk;
 	testDataChunk.DataPacks = GenerateTestDataPacks(std::format("Resource/{0}.csv", dataName));
-	if (DataPackUtils::TrySaveDataChunk(std::format("Resource/{0}.bytes", dataName), testDataChunk))
+	if (DataChunkUtils::TrySaveDataChunk(std::format("Resource/{0}.bytes", dataName), testDataChunk))
 	{
 		std::cout << "Successed!";
 		return;
