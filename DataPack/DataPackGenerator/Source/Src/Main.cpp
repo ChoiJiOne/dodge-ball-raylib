@@ -45,22 +45,10 @@ int main(int argc, char* argv[])
 	// CSV 파일이 위치한 경로를 명확하게 지정하세요.
 	testDataChunk.DataPacks = GenerateTestDataPacks("Resource/Test.csv");
 
-	// 1. msgpack 패커(sbuffer) 채우기: testDataChunk를 직렬화 합니다.
-	msgpack::sbuffer sbuf;
-	msgpack::pack(sbuf, testDataChunk);
-	// 2. 파일로 저장하기 (바이너리 모드)
-	std::string outputFilePath = "Resource/TestData.bytes";
-	std::ofstream ofs(outputFilePath, std::ios::binary);
-
-	if (ofs.is_open())
+	if (DataPackUtils::TrySaveDataChunk(testDataChunk))
 	{
-		ofs.write(sbuf.data(), sbuf.size());
-		ofs.close();
-		std::cout << "성공적으로 바이너리 파일을 생성했습니다: " << outputFilePath << "\n";
-	}
-	else
-	{
-		std::cerr << "파일 쓰기 실패: " << outputFilePath << "\n";
+		std::cout << "Successed!";
+		return 0;
 	}
 
 	return 0;
