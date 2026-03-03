@@ -26,6 +26,13 @@ class DataPackConfig:
     output_parser_path: str # 파서 파일 출력 경로
     log_file_path: str
 
+@dataclass
+class BatchDataPackConfig:
+    target_csv_path: str # CSV 타겟 경로
+    output_header_path: str # 헤더 파일 출력 경로
+    output_parser_path: str # 파서 파일 출력 경로
+    log_file_path: str
+    
 def filter_dict_for_dataclass(cls, data):
     cls_field_names = {f.name for f in fields(cls)}
     return {k: v for k, v in data.items() if k in cls_field_names}

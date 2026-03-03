@@ -50,6 +50,36 @@ class DataPackGenerator:
             self.generate_data_pack_header(self.config.target_name, names_row, types_row)
             self.generate_data_pack_parser(self.config.target_name, names_row, types_row)
 
+    def run_generate_headers(self):
+        csv_files = os.listdir(self.config.target_csv_path)
+        for csv_file in csv_files:
+            if csv_file.endswith(".csv"):
+                target_name = csv_file.replace(".csv", "")
+                csv_path = os.path.join(self.config.target_csv_path, csv_file)
+
+                with open(csv_path, mode='r', encoding='utf-8', newline='') as f:
+                    reader = csv.reader(f)
+                    rows = list(reader)
+
+                    if not self.is_valid_csv_file(rows):
+                        self.logger.error("CSV data is invalid. It needs at least 2 rows: Name, Type, and Data.")
+                        return
+
+                    names_row = rows[0]
+                    types_row = rows[1]
+                    if not self.is_valid_schema(names_row, types_row):
+                        self.logger.error("CSV schema is invalid. Name and Type rows must have the same length.")
+                        return
+
+                    data_col_size = len(names_row)
+                    data_rows = rows[2:]
+                    if not self.is_valid_data_row(data_rows, data_col_size):
+                        self.logger.error("CSV data is invalid. Data row must have the same length as Name and Type rows.")
+                        return
+
+                    self.generate_data_pack_header(target_name, names_row, types_row)
+                    self.generate_data_pack_parser(target_name, names_row, types_row)
+
     def is_exist_csv_file(self, file_path):
         if not os.path.exists(file_path):
             self.logger.error(f"CSV file not found at: {file_path}")

@@ -2,7 +2,7 @@ import click
 
 from cmake_helper import CMakeHelper
 from data_pack_generator import DataPackGenerator
-from config import SolutionConfig, BuildConfig, PackageConfig, DataPackConfig
+from config import SolutionConfig, BuildConfig, PackageConfig, DataPackConfig, BatchDataPackConfig
 
 @click.group()
 def cli():
@@ -68,6 +68,23 @@ def generate_data_pack_header(**kwargs):
         data_pack_generator = DataPackGenerator(DataPackConfig, **kwargs)
         logger = data_pack_generator.get_logger()
         data_pack_generator.run_generate_header()
+    except Exception as e:
+        if logger:
+            logger.error(f"Generate Data Pack Header Failed: {e}")
+        else:
+            print(f"Generate Data Pack Header Failed: {e}")
+
+@cli.command()
+@click.option("--target-csv-path", required=True)
+@click.option("--output-header-path", required=True)
+@click.option("--output-parser-path", required=True)
+@click.option("--log-file-path", required=True)
+def generate_data_pack_headers(**kwargs):
+    logger = None
+    try:
+        data_pack_generator = DataPackGenerator(BatchDataPackConfig, **kwargs)
+        logger = data_pack_generator.get_logger()
+        data_pack_generator.run_generate_headers()
     except Exception as e:
         if logger:
             logger.error(f"Generate Data Pack Header Failed: {e}")
