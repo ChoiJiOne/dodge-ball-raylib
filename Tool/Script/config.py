@@ -16,6 +16,8 @@ class SolutionBuildCofig:
 class BuildConfig:
     solution_path: str # 솔루션 경로.
     config: str # 반드시 "Debug", "Release", "RelWithDebInfo", "MinSizeRel" 중 하나.
+    target_name: str # 타겟 이름.
+    is_rebuild: bool # 타겟을 새롭게 빌드할 지 여부.
     log_file_path: str
 
 @dataclass

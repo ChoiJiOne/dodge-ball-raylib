@@ -55,7 +55,7 @@ class CMakeHelper:
         if self.cmake_config.is_rebuild:
             command.append("--clean-first")
 
-        self.logger.info("솔루션 빌드 시작")
+        self.logger.info(f"{self.cmake_config.target_name} 빌드 시작")
         self.logger.info(f"Command: {' '.join(command)}")
 
         process = subprocess.Popen(
@@ -80,8 +80,12 @@ class CMakeHelper:
         command = [
             "cmake",
             "--build", self.cmake_config.solution_path,
-            "--config", self.cmake_config.config
+            "--config", self.cmake_config.config,
+            "--target", self.cmake_config.target_name,
         ]
+
+        if self.cmake_config.is_rebuild:
+            command.append("--clean-first")
 
         self.logger.info("솔루션 빌드 시작")
         self.logger.info(f"Command: {' '.join(command)}")
