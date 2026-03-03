@@ -28,7 +28,7 @@ if not exist "%TEMP_DIR%" (
 python "%SCRIPT_DIR%cli.py" build-solution ^
     --solution-path "%SOLUTION_DIR%" ^
     --config "%BUILD_TYPE%" ^
-    --log-file-path "%TEMP_DIR%" ^
-    --is-rebuild %IS_REBUILD%
+    --is-rebuild %IS_REBUILD% ^
+    --log-file-path "%TEMP_DIR%"
 
 pause

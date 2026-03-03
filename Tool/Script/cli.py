@@ -26,8 +26,8 @@ def generate(**kwargs):
 @cli.command()
 @click.option("--solution-path", required=True)
 @click.option("--config", type=click.Choice(["Debug", "Release", "RelWithDebInfo", "MinSizeRel"]), required=True)
-@click.option("--log-file-path", required=True)
 @click.option("--is-rebuild", type=bool, required=True) 
+@click.option("--log-file-path", required=True)
 def build_solution(**kwargs):
     logger = None
     try:
