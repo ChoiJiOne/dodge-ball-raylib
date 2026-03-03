@@ -1,4 +1,0 @@
-A,B,C,D,E
-int,float,string,bool,int[]
-1,1.1,HELLO,TRUE,"0,1,2,3"
-2,2.2,WORLD,FALSE,"0,1,2,3"
