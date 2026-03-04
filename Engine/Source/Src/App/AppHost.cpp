@@ -18,6 +18,10 @@ Result<void> AppHost::Startup()
 	if (Result<void> result = configMgr.Startup(); !result.IsSuccess())
 		return result;
 
+	DataChunkManager& dataChunkMgr = DataChunkManager::Get();
+	if (Result<void> result = dataChunkMgr.Startup(); !result.IsSuccess())
+		return result;
+
 	RenderManager& renderMgr = RenderManager::Get();
 	if (Result<void> result = renderMgr.Startup(); !result.IsSuccess())
 		return result;
@@ -51,10 +55,11 @@ Result<void> AppHost::Startup()
 Result<void> AppHost::Run(IApp& app)
 {
 	AppContext ctx(
-		ActorManager::GetPtr(), 
+		ActorManager::GetPtr(),
+		ConfigManager::GetPtr(),
+		DataChunkManager::GetPtr(),
 		InputManager::GetPtr(),
-		RenderManager::GetPtr(),
-		ConfigManager::GetPtr()
+		RenderManager::GetPtr()
 	);
 	ctx.SetRequestQuit([this]() { _isQuit = true; });
 
@@ -93,6 +98,10 @@ Result<void> AppHost::Shutdown()
 	
 	RenderManager& renderMgr = RenderManager::Get();
 	if (Result<void> result = renderMgr.Shutdown(); !result.IsSuccess())
+		return result;
+
+	DataChunkManager& dataChunkMgr = DataChunkManager::Get();
+	if (Result<void> result = dataChunkMgr.Shutdown(); !result.IsSuccess())
 		return result;
 
 	ConfigManager& configMgr = ConfigManager::Get();

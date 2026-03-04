@@ -3,18 +3,20 @@
 #include <functional>
 
 #include "Manager/ActorManager.h"
+#include "Manager/ConfigManager.h"
+#include "Manager/DataChunkManager.h"
 #include "Manager/InputManager.h"
 #include "Manager/RenderManager.h"
-#include "Manager/ConfigManager.h"
 
 class AppContext
 {
 public:
 	AppContext(
-		ActorManager* actorMgr, 
+		ActorManager* actorMgr,
+		ConfigManager* configMgr,
+		DataChunkManager* dataChunkMgr,
 		InputManager* inputMgr,
-		RenderManager* renderMgr,
-		ConfigManager* configMgr
+		RenderManager* renderMgr
 	);
 	virtual ~AppContext();
 
@@ -28,15 +30,17 @@ public:
 	}
 
 	ActorManager* GetActorManager() const { return _actorMgr; }
+	ConfigManager* GetConfigManager() const { return _configMgr; }
+	DataChunkManager* GetDataChunkManager() const { return _dataChunkMgr; }
 	InputManager* GetInputManager() const { return _inputMgr; }
 	RenderManager* GetRenderManager() const { return _renderMgr; }
-	ConfigManager* GetConfigManager() const { return _configMgr; }
 
 private:
 	ActorManager* _actorMgr = nullptr;
+	ConfigManager* _configMgr = nullptr;
+	DataChunkManager* _dataChunkMgr = nullptr;
 	InputManager* _inputMgr = nullptr;
 	RenderManager* _renderMgr = nullptr;
-	ConfigManager* _configMgr = nullptr;
 
 	std::function<void()> _requestQuit;
 };
