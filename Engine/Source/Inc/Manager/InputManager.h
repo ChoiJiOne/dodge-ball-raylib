@@ -83,7 +83,7 @@ enum class EKey : int32_t
 	TAB = 258,       // Key: Tab
 	BACKSPACE = 259,       // Key: Backspace
 	INSERT = 260,       // Key: Ins
-	DELETE = 261,       // Key: Del
+	DEL = 261,       // Key: Del
 	RIGHT = 262,       // Key: Cursor right
 	LEFT = 263,       // Key: Cursor left
 	DOWN = 264,       // Key: Cursor down
