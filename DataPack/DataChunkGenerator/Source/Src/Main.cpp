@@ -1,5 +1,10 @@
 #include <format>
+#include <functional>
 #include <iostream>
+#include <map>
+#include <memory>
+
+#include "Macro.h"
 
 #include "DataChunkUtils.h"
 #include "DataPackUtils.h"
@@ -44,12 +49,101 @@ void GeneratePlayerDataChunk()
 	std::cout << std::format("[{0}] Successfully generated data chunk.", dataName) << std::endl;
 }
 
-int main(int argc, char* argv[])
+class DataChunkGenerator
 {
-	std::cout << "--- Start Data Chunk Generation ---" << std::endl;
-	GenerateBallDataChunk();
-	GeneratePlayerDataChunk();
-	// NOTE: 여기 아래에 계속해서 추가.
-	std::cout << "--- Data Chunk Generation Finished ---" << std::endl;
+public:
+	DataChunkGenerator() = default;
+	virtual ~DataChunkGenerator() = default;
+	
+	void Startup(int32_t argc, char* argv[])
+	{
+		_generatorMap =
+		{
+			{ "Ball", GenerateBallDataChunk },
+			{ "Player", GeneratePlayerDataChunk },
+			// NOTE: 여기 아래에 계속해서 추가.
+		};
+
+		if (argc == COMMAND_TARGET_ALL_PARAM_COUNT)
+		{
+			const std::string_view command = argv[1];
+			if (command != COMMAND_TARGET_ALL)
+			{
+				std::cout << "Invalid DataChunkGenerator command line argument: " << command << std::endl;
+				return;
+			}
+		}
+		else if (argc == COMMAND_TARGET_PARAM_COUNT)
+		{
+			const std::string_view command = argv[1];
+			if (command != COMMAND_TARGET)
+			{
+				std::cout << "Invalid DataChunkGenerator command line argument: " << command << std::endl;
+				return;
+			}
+
+			const std::string_view param = argv[2];
+			const auto& iter = _generatorMap.find(param);
+			if (iter == _generatorMap.end())
+			{
+				std::cout << "Invalid DataChunkGenerator command line param: " << param << std::endl;
+				return;
+			}
+
+			_targetGenerator = iter->second;
+		}
+		else
+		{
+			std::cout << "Invalid DataChunkGenerator command line argument count: " << argc << std::endl;
+			return;
+		}
+
+		_isInitialized = true;
+	}
+
+	void Run()
+	{
+		if (!_isInitialized)
+		{
+			std::cout << "Failed to Startup DataChunkGenerator." << std::endl;
+			return;
+		}
+
+		std::cout << "--- Start Data Chunk Generation ---" << std::endl;
+
+		if (_targetGenerator != nullptr)
+		{
+			_targetGenerator();
+		}
+		else
+		{
+			for (const auto& dataChunkGenerator : _generatorMap)
+			{
+				if (dataChunkGenerator.second != nullptr)
+					dataChunkGenerator.second();
+			}
+		}
+
+		std::cout << "--- Data Chunk Generation Finished ---" << std::endl;
+	}
+
+private:
+	static constexpr std::string_view COMMAND_TARGET_ALL = "--target-all";
+	static constexpr std::string_view COMMAND_TARGET = "--target";
+	static constexpr int32_t COMMAND_TARGET_ALL_PARAM_COUNT = 2;
+	static constexpr int32_t COMMAND_TARGET_PARAM_COUNT = 3;
+
+private:
+	bool _isInitialized = false;
+	
+	std::function<void()> _targetGenerator = nullptr;
+	std::map<std::string_view, std::function<void()>> _generatorMap;
+};
+
+int main(int32_t argc, char* argv[])
+{
+	std::unique_ptr<DataChunkGenerator> dataChunkGenerator = std::make_unique<DataChunkGenerator>();
+	dataChunkGenerator->Startup(argc, argv);
+	dataChunkGenerator->Run();
 	return 0;
 }
