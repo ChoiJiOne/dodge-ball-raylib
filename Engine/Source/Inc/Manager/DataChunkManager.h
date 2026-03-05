@@ -23,14 +23,16 @@ public:
 	virtual Result<void> Shutdown() override;
 
 	template <typename TDataChunk>
-	Result<const TDataChunk*> LoadFromFile(const std::string& filePath)
+	Result<void> LoadFromFile(const std::string& filePath)
 	{
 		std::string key = typeid(TDataChunk).name();
 		auto iter = _cacheDataChunk.find(key);
 		if (iter != _cacheDataChunk.end())
 		{
-			const TDataChunk* dataChunkPtr = static_cast<const TDataChunk*>(iter->second.get());
-			return Result<const TDataChunk*>::Success(dataChunkPtr);
+			return Result<void>::Fail(MAKE_ERROR(
+				EErrorCode::ALREADY_LOAD_DATA_CHUNK,
+				std::format("ALREADY_LOAD_DATA_CHUNK:{0}", filePath)
+			));
 		}
 
 		int32_t dataSize = 0;
@@ -38,13 +40,12 @@ public:
 
 		if (fileData == nullptr || dataSize == 0)
 		{
-			return Result<const TDataChunk*>::Fail(MAKE_ERROR(
+			return Result<void>::Fail(MAKE_ERROR(
 				EErrorCode::FAILED_TO_LOAD_DATA_CHUNK,
 				std::format("FAILED_TO_LOAD_DATA_CHUNK:{0}", filePath)
 			));
 		}
 
-		TDataChunk* rawPtr = nullptr;
 		// NOTE: msgpack에서 예외 던져서 여기서는 try-catch 사용)
 		try
 		{
@@ -52,9 +53,7 @@ public:
 
 			msgpack::object_handle oh = msgpack::unpack(reinterpret_cast<const char*>(fileData), dataSize);
 			msgpack::object deserialized = oh.get();
-
 			deserialized.convert(*dataChunk);
-			rawPtr = dataChunk.get();
 
 			_cacheDataChunk.emplace(key, std::move(dataChunk));
 		}
@@ -63,7 +62,7 @@ public:
 			UnloadFileData(fileData);
 			fileData = nullptr;
 
-			return Result<const TDataChunk*>::Fail(MAKE_ERROR(
+			return Result<void>::Fail(MAKE_ERROR(
 				EErrorCode::FAILED_TO_PARSE_DATA_CHUNK,
 				std::format("FAILED_TO_PARSE_DATA_CHUNK:{0}", filePath)
 			));
@@ -73,7 +72,7 @@ public:
 			UnloadFileData(fileData);
 			fileData = nullptr;
 
-			return Result<const TDataChunk*>::Fail(MAKE_ERROR(
+			return Result<void>::Fail(MAKE_ERROR(
 				EErrorCode::UNKNOWN_DATA_CHUNK_ERROR,
 				std::format("UNKNOWN_DATA_CHUNK_ERROR:{0}", filePath)
 			));
@@ -82,7 +81,7 @@ public:
 		UnloadFileData(fileData);
 		fileData = nullptr;
 
-		return Result<const TDataChunk*>::Success(reinterpret_cast<const TDataChunk*>(rawPtr));
+		return Result<void>::Success();
 	}
 
 	template <typename TDataChunk>
