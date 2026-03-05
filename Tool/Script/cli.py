@@ -112,7 +112,7 @@ def generate_data_pack_headers(**kwargs):
 
 @cli.command()
 def convert_xlsx_to_csv():
-    print("TEST")
+    pass
 
 if __name__ == "__main__":
     cli()
