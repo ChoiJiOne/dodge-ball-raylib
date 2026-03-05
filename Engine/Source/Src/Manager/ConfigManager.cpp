@@ -16,24 +16,14 @@ Result<void> ConfigManager::Shutdown()
 	if (!_isInitialized)
 		return Result<void>::Fail(MAKE_ERROR(EErrorCode::NOT_INITIALIZED, "FAILED_TO_SHUTDOWN_CONFIG_MANAGER"));
 
-	for (auto& configKeyValue : _configMap)
+	for (auto& config : _configMap)
 	{
-		const std::string& configKey = configKeyValue.first;
-		Destroy(configKey);
+		config.second.reset();
+		config.second = nullptr;
 	}
 
 	_isInitialized = false;
 	return Result<void>::Success();
-}
-
-void ConfigManager::Destroy(const std::string& key)
-{
-	auto iter = _configMap.find(key);
-	if (iter == _configMap.end())
-		return;
-
-	iter->second.release();
-	iter->second = nullptr;
 }
 
 bool ConfigManager::LoadConfigFromFile(const std::string& filePath, IConfig* outConfig)

@@ -23,7 +23,7 @@ public:
 	virtual Result<void> Shutdown() override;
 
 	template <typename TDataChunk>
-	Result<void> LoadFromFile(const std::string& filePath)
+	Result<void> LoadDataChunk(const std::string& filePath)
 	{
 		std::string key = typeid(TDataChunk).name();
 		auto iter = _cacheDataChunk.find(key);
@@ -97,7 +97,7 @@ public:
 			));
 		}
 
-		const TDataChunk* dataChunkPtr = static_cast<const TDataChunk*>(iter->second.get());
+		const TDataChunk* dataChunkPtr = reinterpret_cast<const TDataChunk*>(iter->second.get());
 		return Result<const TDataChunk*>::Success(dataChunkPtr);
 	}
 	

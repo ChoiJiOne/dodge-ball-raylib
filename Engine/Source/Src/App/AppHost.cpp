@@ -34,12 +34,15 @@ Result<void> AppHost::Startup()
 	if (Result<void> result = actorMgr.Startup(); !result.IsSuccess())
 		return result;
 
-	std::string configKey = NAME_OF(EngineConfig);
-	std::string configPath = std::format("Config/{0}.yaml", configKey);
-	EngineConfig* engineConfig = configMgr.Create<EngineConfig>(configPath, configKey);
-	if (engineConfig == nullptr)
-		return Result<void>::Fail(MAKE_ERROR(EErrorCode::FAILED_TO_LOAD_CONFIG, "FAILED_TO_LOAD_ENGINE_CONFIG"));
+	std::string configPath = std::format("Config/{0}.yaml", NAME_OF(EngineConfig));
+	if (Result<void> result = configMgr.LoadConfig<EngineConfig>(configPath); !result.IsSuccess())
+		return result;
+	
+	Result<const EngineConfig*> result = configMgr.GetConfig<EngineConfig>();
+	if (!result.IsSuccess())
+		return Result<void>::Fail(result.GetError());
 
+	const EngineConfig* engineConfig = result.GetValue();
 	int32_t windowWidth = engineConfig->GetWindowWidth();
 	int32_t windowHeight = engineConfig->GetWindowHeight();
 	const std::string& windowTitle = engineConfig->GetWindowTitle();

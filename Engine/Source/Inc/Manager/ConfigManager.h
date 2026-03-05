@@ -16,37 +16,59 @@ public:
 	virtual Result<void> Shutdown() override;
 
 	template <typename TConfig>
-	TConfig* Create(const std::string& path, const std::string& key)
+	Result<void> LoadConfig(const std::string& filePath)
 	{
+		std::string key = typeid(TConfig).name();
 		const auto& iter = _configMap.find(key);
 		if (iter != _configMap.end())
 		{
-			LOG_E("ALREADY_EXIST_CONFIG(path:{0}, key:{1})", path, key);
-			return reinterpret_cast<TConfig*>(iter->second.get());
+			return Result<void>::Fail(MAKE_ERROR(
+				EErrorCode::ALREADY_LOAD_CONFIG,
+				std::format("ALREADY_LOAD_CONFIG:{0}", filePath)
+			));
 		}
 
-		_configMap.insert({ key, std::make_unique<TConfig>() });
-
-		IConfig* config = _configMap[key].get();
-		if (!LoadConfigFromFile(path, config))
+		try
 		{
-			LOG_E("FAILED_TO_LOAD_CONFIG_FROM_FILE(path:{0}, key:{1})", path, key);
-			return nullptr;
+			std::unique_ptr<IConfig> config = std::make_unique<TConfig>();
+
+			YAML::Node node = YAML::LoadFile(filePath);
+			if (!config->TryParse(node))
+			{
+				return Result<void>::Fail(MAKE_ERROR(
+					EErrorCode::FAILED_TO_PARSE_CONFIG,
+					std::format("FAILED_TO_PARSE_CONFIG:{0}", filePath)
+				));
+			}
+
+			_configMap.emplace(key, std::move(config));
+		}
+		catch (const YAML::Exception& e)
+		{
+			return Result<void>::Fail(MAKE_ERROR(
+				EErrorCode::FAILED_TO_LOAD_CONFIG,
+				std::format("FAILED_TO_LOAD_CONFIG:{0}", filePath)
+			));
 		}
 
-		return reinterpret_cast<TConfig*>(config);
+		return Result<void>::Success();
 	}
 
-	void Destroy(const std::string& key);
-
 	template <typename TConfig>
-	TConfig* GetConfig(const std::string& key)
+	Result<const TConfig*> GetConfig()
 	{
-		const auto& iter = _configMap.find(key);
-		if (iter != _configMap.end())
-			return reinterpret_cast<TConfig*>(iter->second.get());
+		std::string key = typeid(TConfig).name();
+		auto iter = _configMap.find(key);
+		if (iter == _configMap.end())
+		{
+			return Result<const TConfig*>::Fail(MAKE_ERROR(
+				EErrorCode::NOT_FOUND_CONFIG,
+				std::format("NOT_FOUND_CONFIG:{0}", key)
+			));
+		}
 
-		return nullptr;
+		const TConfig* configPtr = reinterpret_cast<const TConfig*>(iter->second.get());
+		return Result<const TConfig*>::Success(configPtr);
 	}
 
 private:
