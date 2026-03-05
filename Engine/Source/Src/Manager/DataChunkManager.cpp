@@ -14,6 +14,12 @@ Result<void> DataChunkManager::Shutdown()
 	if (!_isInitialized)
 		return Result<void>::Fail(MAKE_ERROR(EErrorCode::NOT_INITIALIZED, "FAILED_TO_SHUTDOWN_DATA_CHUNK_MANAGER"));
 
+	for (auto& dataChunk : _cacheDataChunk)
+	{
+		dataChunk.second.reset();
+		dataChunk.second = nullptr;
+	}
+
 	_isInitialized = false;
 	return Result<void>::Success();
 }
