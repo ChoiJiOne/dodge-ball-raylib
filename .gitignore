@@ -18,6 +18,9 @@ Build
 *.bin
 *.png
 
+# 엑셀 파일
+~$*.xlsx
+
 # 파이썬 관련 설정
 .vscode
 .venv
