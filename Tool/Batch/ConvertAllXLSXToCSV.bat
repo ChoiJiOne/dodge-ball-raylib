@@ -12,7 +12,7 @@ if not exist "%CSV_OUT_DIR%" (
     mkdir "%CSV_OUT_DIR%"
 )
 
-python "%SCRIPT_DIR%cli.py" convert-xlsxs-to-csvs ^
+python "%SCRIPT_DIR%cli.py" convert-all-xlsx-to-csv ^
     --target-xlsx-path "%XLSX_DIR%" ^
     --output-csv-path "%CSV_OUT_DIR%" ^
     --log-file-path "%TEMP_DIR%"

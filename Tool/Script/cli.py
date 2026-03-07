@@ -99,7 +99,7 @@ def generate_data_pack_header(**kwargs):
 @click.option("--output-header-path", required=True)
 @click.option("--output-parser-path", required=True)
 @click.option("--log-file-path", required=True)
-def generate_data_pack_headers(**kwargs):
+def generate_all_data_pack_header(**kwargs):
     logger = None
     try:
         data_pack_header_generator = DataPackHeaderGenerator(BatchDataPackConfig, **kwargs)
@@ -107,9 +107,9 @@ def generate_data_pack_headers(**kwargs):
         data_pack_header_generator.run_generate_headers()
     except Exception as e:
         if logger:
-            logger.error(f"Generate Data Pack Header Failed: {e}")
+            logger.error(f"Generate All Data Pack Header Failed: {e}")
         else:
-            print(f"Generate Data Pack Header Failed: {e}")
+            print(f"Generate All Data Pack Header Failed: {e}")
 
 @cli.command()
 @click.option("--target-xlsx-path", required=True)
@@ -132,7 +132,7 @@ def convert_xlsx_to_csv(**kwargs):
 @click.option("--target-xlsx-path", required=True)
 @click.option("--output-csv-path", required=True)
 @click.option("--log-file-path", required=True)
-def convert_xlsxs_to_csvs(**kwargs):
+def convert_all_xlsx_to_csv(**kwargs):
     logger = None
     try:
         xlsx_to_csv_converter = XLSXToCSVConverter(BatchConvertXLSXToCSVConfig, **kwargs)

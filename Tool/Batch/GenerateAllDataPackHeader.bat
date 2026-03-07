@@ -10,7 +10,7 @@ if not exist "%TEMP_DIR%" (
     mkdir "%TEMP_DIR%"
 )
 
-python "%SCRIPT_DIR%cli.py" generate-data-pack-headers ^
+python "%SCRIPT_DIR%cli.py" generate-all-data-pack-header ^
     --target-csv-path "%CSV_DIR%" ^
     --output-header-path "%HEADER_OUT_DIR%" ^
     --output-parser-path "%PARSER_OUT_DIR%" ^
