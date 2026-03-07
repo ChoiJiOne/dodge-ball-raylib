@@ -1,8 +1,9 @@
 import click
 
 from cmake_executor import CMakeExecutor
+from xlsx_to_csv_converter import XLSXToCSVConverter
 from data_pack_header_generator import DataPackHeaderGenerator
-from config import SolutionConfig, SolutionBuildCofig, BuildConfig, PackageConfig, DataPackConfig, BatchDataPackConfig
+from config import SolutionConfig, SolutionBuildCofig, BuildConfig, PackageConfig, DataPackConfig, BatchDataPackConfig, ConvertXLSXToCSVConfig
 
 @click.group()
 def cli():
@@ -111,8 +112,21 @@ def generate_data_pack_headers(**kwargs):
             print(f"Generate Data Pack Header Failed: {e}")
 
 @cli.command()
-def convert_xlsx_to_csv():
-    pass
+@click.option("--target-xlsx-path", required=True)
+@click.option("--target-name", required=True)
+@click.option("--output-csv-path", required=True)
+@click.option("--log-file-path", required=True)
+def convert_xlsx_to_csv(**kwargs):
+    logger = None
+    try:
+        xlsx_to_csv_converter = XLSXToCSVConverter(ConvertXLSXToCSVConfig, **kwargs)
+        logger = xlsx_to_csv_converter.get_logger()
+        xlsx_to_csv_converter.run_convert()
+    except Exception as e:
+        if logger:
+            logger.error(f"Convert XLSX to CSV Failed: {e}")
+        else:
+            print(f"Convert XLSX to CSV Failed: {e}")
 
 if __name__ == "__main__":
     cli()
