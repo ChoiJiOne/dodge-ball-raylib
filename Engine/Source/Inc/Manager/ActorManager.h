@@ -41,7 +41,7 @@ public:
 		if (iter == _cacheActorMap.end()) 
 		{
 			return Result<TActor *>::Fail(MAKE_ERROR(
-				EErrorCode::NOT_INITIALIZED, 
+				EErrorCode::NOT_FOUND_ACTOR,
 				std::format("NOT_FOUND_ACTOR:{}", key)
 			));
 		}

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <format>
 #include <map>
 #include <string>
 #include <memory>
@@ -91,7 +92,7 @@ public:
 		}
 
 		std::unique_ptr<TController> controller = std::make_unique<TController>(std::forward<Args>(args)...);
-		controller->Initialize(this);
+		controller->SetOwnerActor(this);
 
 		_controllerMap.emplace(key, std::move(controller));
 

@@ -4,6 +4,7 @@
 #include "BallDataChunk.h"
 
 #include "App.h"
+#include "PlayerBallActor.h"
 
 App::App() 
 {
@@ -18,6 +19,12 @@ Result<void> App::OnStartup(const AppContext& appCtx)
 	if (Result<void> result = dataChunkMgr->LoadDataChunk<BallDataChunk>("Resource/Ball.bytes"); !result.IsSuccess())
 		return result;
 
+	Result<PlayerBallActor*> result = appCtx.GetActorManager()->CreateActor<PlayerBallActor>("PlayerBall");
+	if (!result.IsSuccess())
+		return Result<void>::Fail(result.GetError());
+
+	_actors.push_back(result.GetValue());
+	
 	return Result<void>::Success();
 }
 
