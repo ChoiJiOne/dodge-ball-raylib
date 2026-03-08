@@ -4,6 +4,7 @@ add_subdirectory(raylib)
 add_subdirectory(yaml-cpp)
 add_subdirectory(msgpack-cpp)
 add_subdirectory(csv-parser)
+add_subdirectory(glm)
 
 set_target_properties(
     raylib
@@ -11,5 +12,6 @@ set_target_properties(
     glfw
     msgpack-cxx-headers
     csv
+    glm
     PROPERTIES FOLDER "ThirdParty"
 )

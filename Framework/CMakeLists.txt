@@ -27,6 +27,7 @@ target_link_libraries(
     raylib 
     yaml-cpp::yaml-cpp
     msgpack-cxx
+    glm::glm
     DataPack
 )
 target_compile_definitions(
