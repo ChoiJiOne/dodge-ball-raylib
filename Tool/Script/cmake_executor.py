@@ -55,7 +55,7 @@ class CMakeExecutor:
         if self.cmake_config.is_rebuild:
             command.append("--clean-first")
 
-        self.logger.info(f"{self.cmake_config.target_name} 빌드 시작")
+        self.logger.info(f"솔루션 빌드 시작")
         self.logger.info(f"Command: {' '.join(command)}")
 
         process = subprocess.Popen(
