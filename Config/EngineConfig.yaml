@@ -1,4 +1,4 @@
-WindowWidth: 800
-WindowHeight: 600
+WindowWidth: 600
+WindowHeight: 800
 WindowTitle: "Dodge Ball"
 TargetFPS: 60
