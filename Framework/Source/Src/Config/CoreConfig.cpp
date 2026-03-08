@@ -1,8 +1,8 @@
-#include "Config/EngineConfig.h"
+#include "Config/CoreConfig.h"
 #include "Macro/Macro.h"
 #include "Utils/LogUtils.h"
 
-bool EngineConfig::TryParse(const YAML::Node& node)
+bool CoreConfig::TryParse(const YAML::Node& node)
 {
 	if (!TryGetValue(node, "WindowWidth", _windowWidth))
 		LOG_E("FAILED_TO_GET_ENGINE_CONFIG_VALUE(name:{0})", "WindowWidth");

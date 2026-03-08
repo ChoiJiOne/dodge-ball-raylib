@@ -1,7 +1,7 @@
 #include <raylib.h>
 
 #include "App/AppHost.h"
-#include "Config/EngineConfig.h"
+#include "Config/CoreConfig.h"
 
 AppHost::~AppHost()
 {
@@ -34,19 +34,19 @@ Result<void> AppHost::Startup()
 	if (Result<void> result = actorMgr.Startup(); !result.IsSuccess())
 		return result;
 
-	std::string configPath = std::format("Config/{0}.yaml", NAME_OF(EngineConfig));
-	if (Result<void> result = configMgr.LoadConfig<EngineConfig>(configPath); !result.IsSuccess())
+	std::string configPath = std::format("Config/{0}.yaml", NAME_OF(CoreConfig));
+	if (Result<void> result = configMgr.LoadConfig<CoreConfig>(configPath); !result.IsSuccess())
 		return result;
 	
-	Result<const EngineConfig*> result = configMgr.GetConfig<EngineConfig>();
+	Result<const CoreConfig*> result = configMgr.GetConfig<CoreConfig>();
 	if (!result.IsSuccess())
 		return Result<void>::Fail(result.GetError());
 
-	const EngineConfig* engineConfig = result.GetValue();
-	int32_t windowWidth = engineConfig->GetWindowWidth();
-	int32_t windowHeight = engineConfig->GetWindowHeight();
-	const std::string& windowTitle = engineConfig->GetWindowTitle();
-	int32_t targetFPS = engineConfig->GetTargetFPS();
+	const CoreConfig* coreConfig = result.GetValue();
+	int32_t windowWidth = coreConfig->GetWindowWidth();
+	int32_t windowHeight = coreConfig->GetWindowHeight();
+	const std::string& windowTitle = coreConfig->GetWindowTitle();
+	int32_t targetFPS = coreConfig->GetTargetFPS();
 	
 	InitWindow(windowWidth, windowHeight, windowTitle.c_str());
 	SetTargetFPS(targetFPS);

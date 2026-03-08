@@ -2,11 +2,11 @@
 
 #include "Config/IConfig.h"
 
-class EngineConfig : public IConfig
+class CoreConfig : public IConfig
 {
 public:
-	EngineConfig() = default;
-	virtual ~EngineConfig() = default;
+	CoreConfig() = default;
+	virtual ~CoreConfig() = default;
 
 	const int32_t& GetWindowWidth() const { return _windowWidth; }
 	const int32_t& GetWindowHeight() const { return _windowHeight; }
