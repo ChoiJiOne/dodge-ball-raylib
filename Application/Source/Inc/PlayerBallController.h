@@ -5,8 +5,8 @@
 class PlayerBallController : public IActorController
 {
 public:
-	PlayerBallController();
-	virtual ~PlayerBallController();
+	PlayerBallController() = default;
+	virtual ~PlayerBallController() = default;
 
 	DISALLOW_COPY_AND_ASSIGN(PlayerBallController);
 

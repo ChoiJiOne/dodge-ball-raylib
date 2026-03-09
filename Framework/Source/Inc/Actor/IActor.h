@@ -10,6 +10,7 @@
 #include "Macro/Macro.h"
 #include "Actor/IActorModel.h"
 #include "Actor/IActorController.h"
+#include "Render/IRenderableModel.h"
 
 class IActor
 {
@@ -56,7 +57,15 @@ public:
 		}
 
 		std::unique_ptr<TModel> model = std::make_unique<TModel>(std::forward<Args>(args)...);
+		TModel* rawModelPtr = model.get();
+
 		_modelMap.emplace(key, std::move(model));
+		
+		if (std::is_base_of_v<IRenderableModel, TModel>)
+		{
+			IRenderableModel* renderableModel = dynamic_cast<IRenderableModel*>(rawModelPtr);
+			_renderableModelMap.emplace(key, renderableModel);
+		}
 
 		return Result<void>::Success();
 	}
@@ -78,6 +87,11 @@ public:
 		return Result<TModel*>::Success(model);
 	}
 
+	const std::map<std::string, IRenderableModel*>& GetRenderableModelMap() const
+	{
+		return _renderableModelMap;
+	}
+	
 	template<typename TController, typename... Args>
 	Result<void> AddController(Args&&... args)
 	{
@@ -122,4 +136,5 @@ protected:
 private:
 	std::map<std::string, std::unique_ptr<IActorModel>> _modelMap;
 	std::map<std::string, std::unique_ptr<IActorController>> _controllerMap;
+	std::map<std::string, IRenderableModel*> _renderableModelMap;
 };

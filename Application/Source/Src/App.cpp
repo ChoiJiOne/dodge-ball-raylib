@@ -55,9 +55,10 @@ void App::OnRender(const AppContext& appCtx)
 
 	for (auto& actor : _actors)
 	{
-		if (Result<PlayerBallModel*> result = actor->GetModel<PlayerBallModel>(); result.IsSuccess())
+		const auto& renderableModelMap = actor->GetRenderableModelMap();
+		for (const auto& [key, model] : renderableModelMap)
 		{
-			renderMgr->Render(result.GetValue());
+			renderMgr->Render(model);
 		}
 	}
 	
