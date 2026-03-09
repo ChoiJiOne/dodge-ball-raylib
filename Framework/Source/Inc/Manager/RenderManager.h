@@ -1,6 +1,7 @@
 #pragma once
 
-#include "IManager.h"
+#include "Manager/IManager.h"
+#include "Render/IRenderableModel.h"
 
 class RenderManager : public IManager<RenderManager>
 {
@@ -12,6 +13,8 @@ public:
 
 	void BeginFrame(float r, float g, float b, float a);
 	void EndFrame();
+
+	void Render(const IRenderableModel* renderableModel);
 
 private:
 	friend class IManager<RenderManager>;

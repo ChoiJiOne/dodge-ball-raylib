@@ -1,6 +1,11 @@
+#include <format>
+
 #include <raylib.h>
 
+#include "Macro/Macro.h"
 #include "Manager/RenderManager.h"
+#include "Utils/LogUtils.h"
+#include "Utils/MathUtils.h"
 
 Result<void> RenderManager::Startup()
 {
@@ -32,4 +37,40 @@ void RenderManager::BeginFrame(float r, float g, float b, float a)
 void RenderManager::EndFrame()
 {
 	EndDrawing();
+}
+
+void RenderManager::Render(const IRenderableModel* renderableModel)
+{
+	if (!renderableModel)
+		return;
+
+	ERenderType renderType = renderableModel->GetRenderType();
+
+	switch (renderType)
+	{
+	case ERenderType::CIRCLE:
+	{
+		const ICircleModel* circle = reinterpret_cast<const ICircleModel*>(renderableModel);
+
+		Vector2 pos = MathUtils::ToVector2(circle->GetPosition());
+		float radius = circle->GetRadius();
+		Color color = MathUtils::ToColor8Bit(circle->GetColor());
+
+		DrawCircleV(pos, radius, color);
+		break;
+	}
+	case ERenderType::RECTANGLE:
+	{
+		const IRectModel* rect = reinterpret_cast<const IRectModel*>(renderableModel);
+
+		Vector2 pos = MathUtils::ToVector2(rect->GetPosition());
+		Vector2 size = MathUtils::ToVector2(rect->GetSize());
+		Color color = MathUtils::ToColor8Bit(rect->GetColor());
+
+		DrawRectangleV(pos, size, color);
+		break;
+	}
+	default:
+		break;
+	}
 }
