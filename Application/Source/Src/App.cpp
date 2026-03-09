@@ -4,6 +4,7 @@
 #include "BallDataChunk.h"
 
 #include "App.h"
+#include "PlayerBallModel.h"
 #include "PlayerBallActor.h"
 
 App::App() 
@@ -24,7 +25,7 @@ Result<void> App::OnStartup(const AppContext& appCtx)
 		return Result<void>::Fail(result.GetError());
 
 	_actors.push_back(result.GetValue());
-	
+
 	return Result<void>::Success();
 }
 
@@ -48,10 +49,18 @@ void App::OnPostTick(const AppContext& appCtx, float deltaSeconds)
 void App::OnRender(const AppContext& appCtx)
 {
 	RenderManager* renderMgr = appCtx.GetRenderManager();
+	ActorManager* actorMgr = appCtx.GetActorManager();
+
 	renderMgr->BeginFrame(0.5f, 0.5f, 0.5f, 1.0f);
+
+	for (auto& actor : _actors)
 	{
-		// 여기에 렌더링 코드...
+		if (Result<PlayerBallModel*> result = actor->GetModel<PlayerBallModel>(); result.IsSuccess())
+		{
+			renderMgr->Render(result.GetValue());
+		}
 	}
+	
 	renderMgr->EndFrame();
 }
 

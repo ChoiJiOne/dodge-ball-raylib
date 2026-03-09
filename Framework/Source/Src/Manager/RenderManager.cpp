@@ -50,7 +50,7 @@ void RenderManager::Render(const IRenderableModel* renderableModel)
 	{
 	case ERenderType::CIRCLE:
 	{
-		const ICircleModel* circle = reinterpret_cast<const ICircleModel*>(renderableModel);
+		const ICircleModel* circle = dynamic_cast<const ICircleModel*>(renderableModel);
 
 		Vector2 pos = MathUtils::ToVector2(circle->GetPosition());
 		float radius = circle->GetRadius();
@@ -61,7 +61,8 @@ void RenderManager::Render(const IRenderableModel* renderableModel)
 	}
 	case ERenderType::RECTANGLE:
 	{
-		const IRectModel* rect = reinterpret_cast<const IRectModel*>(renderableModel);
+		const IRectModel* rect = dynamic_cast<const IRectModel*>(renderableModel);
+		if (!rect) break;
 
 		Vector2 pos = MathUtils::ToVector2(rect->GetPosition());
 		Vector2 size = MathUtils::ToVector2(rect->GetSize());
