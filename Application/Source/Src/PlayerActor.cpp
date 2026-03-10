@@ -1,8 +1,8 @@
 #include "BallModel.h"
-#include "PlayerBallActor.h"
+#include "PlayerActor.h"
 #include "PlayerBallController.h"
 
-PlayerBallActor::PlayerBallActor()
+PlayerActor::PlayerActor()
 {
 	AddModel<BallModel>();
 	AddController<PlayerBallController>();
@@ -10,13 +10,13 @@ PlayerBallActor::PlayerBallActor()
 	_isInitialized = true;
 }
 
-PlayerBallActor::~PlayerBallActor()
+PlayerActor::~PlayerActor()
 {
 	if (_isInitialized)
 		Release();
 }
 
-void PlayerBallActor::Release()
+void PlayerActor::Release()
 {
 	IActor::Release();
 

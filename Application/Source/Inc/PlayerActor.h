@@ -2,11 +2,11 @@
 
 #include "Actor/IActor.h"
 
-class PlayerBallActor : public IActor
+class PlayerActor : public IActor
 {
 public:
-	PlayerBallActor();
-	virtual ~PlayerBallActor();
+	PlayerActor();
+	virtual ~PlayerActor();
 
 	virtual void Release() override;
 };
