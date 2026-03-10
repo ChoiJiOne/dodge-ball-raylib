@@ -4,9 +4,9 @@
 #include "Macro/Macro.h"
 
 #include "BallModel.h"
-#include "PlayerBallController.h"
+#include "PlayerActorController.h"
 
-void PlayerBallController::OnInitialize(IActor* owner)
+void PlayerActorController::OnInitialize(IActor* owner)
 {
 	IActorController::OnInitialize(owner);
 
@@ -19,13 +19,13 @@ void PlayerBallController::OnInitialize(IActor* owner)
 		_model = result.GetValue();
 }
 
-void PlayerBallController::OnRelease()
+void PlayerActorController::OnRelease()
 {
 	_inputMgr = nullptr;
 	_model = nullptr;
 }
 
-void PlayerBallController::OnTick(float deltaSeconds)
+void PlayerActorController::OnTick(float deltaSeconds)
 {
 	glm::vec2 position = _model->GetPosition();
 	if (_inputMgr->GetKeyPress(EKey::LEFT) == EPress::HELD)

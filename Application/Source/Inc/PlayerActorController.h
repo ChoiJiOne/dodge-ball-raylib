@@ -8,13 +8,13 @@
 class InputManager;
 class BallModel;
 
-class PlayerBallController : public IActorController
+class PlayerActorController : public IActorController
 {
 public:
-	PlayerBallController() = default;
-	virtual ~PlayerBallController() = default;
+	PlayerActorController() = default;
+	virtual ~PlayerActorController() = default;
 
-	DISALLOW_COPY_AND_ASSIGN(PlayerBallController);
+	DISALLOW_COPY_AND_ASSIGN(PlayerActorController);
 
 	virtual void OnInitialize(IActor* owner) override;
 	virtual void OnRelease() override;
