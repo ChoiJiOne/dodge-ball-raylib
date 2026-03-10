@@ -19,7 +19,9 @@ protected:
 	bool TryGetValue(const YAML::Node& node, const std::string& key, T& outValue)
 	{
 		if (!node[key].IsDefined())
+		{
 			return false;
+		}
 
 		outValue = node[key].as<T>();
 		return true;

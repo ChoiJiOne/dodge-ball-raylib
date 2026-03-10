@@ -5,7 +5,9 @@
 Result<void> ConfigManager::Startup()
 {
 	if (_isInitialized)
+	{
 		return Result<void>::Fail(MAKE_ERROR(EErrorCode::ALREADY_INITIALIZED, "FAILED_TO_STARTUP_CONFIG_MANAGER"));
+	}
 
 	_isInitialized = true;
 	return Result<void>::Success();
@@ -14,7 +16,9 @@ Result<void> ConfigManager::Startup()
 Result<void> ConfigManager::Shutdown()
 {
 	if (!_isInitialized)
+	{
 		return Result<void>::Fail(MAKE_ERROR(EErrorCode::NOT_INITIALIZED, "FAILED_TO_SHUTDOWN_CONFIG_MANAGER"));
+	}
 
 	for (auto& config : _configMap)
 	{

@@ -25,7 +25,9 @@ public:
 		for (auto& [key, controller] : _controllerMap)
 		{
 			if (controller)
+			{
 				controller->OnTick(deltaSeconds);
+			}
 		}
 	}
 
@@ -33,8 +35,10 @@ public:
 	{
 		for (auto& [key, controller] : _controllerMap)
 		{
-			if (controller) 
+			if (controller)
+			{
 				controller->OnRelease();
+			}
 		}
 
 		_controllerMap.clear();

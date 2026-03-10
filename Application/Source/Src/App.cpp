@@ -14,15 +14,20 @@ Result<void> App::OnStartup(const AppContext& appCtx)
 {
 	DataChunkManager* dataChunkMgr = appCtx.GetDataChunkManager();
 	if (Result<void> result = dataChunkMgr->LoadDataChunk<PlayerDataChunk>("Resource/Player.bytes"); !result.IsSuccess())
+	{
 		return result;
+	}
 
 	if (Result<void> result = dataChunkMgr->LoadDataChunk<BallDataChunk>("Resource/Ball.bytes"); !result.IsSuccess())
+	{
 		return result;
+	}
 
 	Result<PlayerActor*> result = appCtx.GetActorManager()->CreateActor<PlayerActor>("Player");
 	if (!result.IsSuccess())
+	{
 		return Result<void>::Fail(result.GetError());
-
+	}
 	_actors.push_back(result.GetValue());
 
 	return Result<void>::Success();
@@ -32,13 +37,17 @@ void App::OnPreTick(const AppContext& appCtx, float deltaSeconds)
 {
 	InputManager* inputMgr = appCtx.GetInputManager();
 	if (inputMgr->GetKeyPress(EKey::ESCAPE) == EPress::PRESSED)
+	{
 		appCtx.RequestQuit();
+	}
 }
 
 void App::OnTick(const AppContext& appCtx, float deltaSeconds)
 {
 	for (auto& actor : _actors)
+	{
 		actor->Tick(deltaSeconds);
+	}
 }
 
 void App::OnPostTick(const AppContext& appCtx, float deltaSeconds)

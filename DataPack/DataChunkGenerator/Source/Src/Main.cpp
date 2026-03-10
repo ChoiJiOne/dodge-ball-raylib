@@ -120,7 +120,9 @@ public:
 			for (const auto& dataChunkGenerator : _generatorMap)
 			{
 				if (dataChunkGenerator.second != nullptr)
+				{
 					dataChunkGenerator.second();
+				}
 			}
 		}
 

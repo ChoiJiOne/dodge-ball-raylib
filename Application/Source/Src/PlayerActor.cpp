@@ -13,7 +13,9 @@ PlayerActor::PlayerActor()
 PlayerActor::~PlayerActor()
 {
 	if (_isInitialized)
+	{
 		Release();
+	}
 }
 
 void PlayerActor::Release()

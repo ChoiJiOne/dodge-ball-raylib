@@ -28,7 +28,8 @@ public:
 		}
 
 		std::unique_ptr<TActor> actor = std::make_unique<TActor>(std::forward<Args>(args)...);
-		TActor* actorPtr = static_cast<TActor*>(actor.get());
+		TActor* actorPtr = actor.get();
+
 		_cacheActorMap.emplace(key, std::move(actor));
 
 		return Result<TActor*>::Success(actorPtr);
@@ -46,7 +47,7 @@ public:
 			));
 		}
 
-		TActor *actorPtr = static_cast<TActor *>(iter->second.get());
+		TActor* actorPtr = reinterpret_cast<TActor*>(iter->second.get());
 		return Result<TActor*>::Success(actorPtr);
 	}
 

@@ -11,10 +11,14 @@ bool DataPackUtils::ParseBool(const std::string& fieldValue)
 	std::transform(fieldValue.begin(), fieldValue.end(), value.begin(), [](uint8_t c) { return std::tolower(c); });
 
 	if (value == STRING_VALUE_TRUE)
+	{
 		return true;
+	}
 
 	if (value == STRING_VALUE_FALSE)
+	{
 		return false;
+	}
 
 	std::cout << "Invalid bool type value: " << value << std::endl;
 	return false;
@@ -29,7 +33,9 @@ std::vector<T> ParseArray(const std::string& fieldValue, std::function<T(const s
 	while (std::getline(ss, item, ','))
 	{
 		if (!item.empty())
+		{
 			result.push_back(converter(item));
+		}
 	}
 
 	return result;

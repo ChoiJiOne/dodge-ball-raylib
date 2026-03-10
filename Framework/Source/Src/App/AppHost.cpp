@@ -12,35 +12,51 @@ AppHost::~AppHost()
 Result<void> AppHost::Startup()
 {
 	if (_isInitialized)
+	{
 		return Result<void>::Fail(MAKE_ERROR(EErrorCode::ALREADY_INITIALIZED, "FAILED_TO_STARTUP_APP_HOST"));
+	}
 
 	ConfigManager& configMgr = ConfigManager::Get();
 	if (Result<void> result = configMgr.Startup(); !result.IsSuccess())
+	{
 		return result;
+	}
 
 	DataChunkManager& dataChunkMgr = DataChunkManager::Get();
 	if (Result<void> result = dataChunkMgr.Startup(); !result.IsSuccess())
+	{
 		return result;
+	}
 
 	RenderManager& renderMgr = RenderManager::Get();
 	if (Result<void> result = renderMgr.Startup(); !result.IsSuccess())
+	{
 		return result;
+	}
 
 	InputManager& inputMgr = InputManager::Get();
 	if (Result<void> result = inputMgr.Startup(); !result.IsSuccess())
+	{
 		return result;
+	}
 
 	ActorManager& actorMgr = ActorManager::Get();
 	if (Result<void> result = actorMgr.Startup(); !result.IsSuccess())
+	{
 		return result;
+	}
 
 	std::string configPath = std::format("Config/{0}.yaml", NAME_OF(CoreConfig));
 	if (Result<void> result = configMgr.LoadConfig<CoreConfig>(configPath); !result.IsSuccess())
+	{
 		return result;
+	}
 	
 	Result<const CoreConfig*> result = configMgr.GetConfig<CoreConfig>();
 	if (!result.IsSuccess())
+	{
 		return Result<void>::Fail(result.GetError());
+	}
 
 	const CoreConfig* coreConfig = result.GetValue();
 	int32_t windowWidth = coreConfig->GetWindowWidth();
@@ -67,7 +83,9 @@ Result<void> AppHost::Run(IApp& app)
 	ctx.SetRequestQuit([this]() { _isQuit = true; });
 
 	if (Result<void> result = app.OnStartup(ctx); !result.IsSuccess())
+	{
 		return result;
+	}
 
 	while (!_isQuit)
 	{
@@ -79,7 +97,9 @@ Result<void> AppHost::Run(IApp& app)
 	}
 
 	if (Result<void> result = app.OnShutdown(ctx); !result.IsSuccess())
+	{
 		return result;
+	}
 
 	return Result<void>::Success();
 }
@@ -93,23 +113,33 @@ Result<void> AppHost::Shutdown()
 	
 	InputManager& inputMgr = InputManager::Get();
 	if (Result<void> result = inputMgr.Shutdown(); !result.IsSuccess())
+	{
 		return result;
+	}
 
 	ActorManager& actorMgr = ActorManager::Get();
 	if (Result<void> result = actorMgr.Shutdown(); !result.IsSuccess())
+	{
 		return result;
+	}
 	
 	RenderManager& renderMgr = RenderManager::Get();
 	if (Result<void> result = renderMgr.Shutdown(); !result.IsSuccess())
+	{
 		return result;
+	}
 
 	DataChunkManager& dataChunkMgr = DataChunkManager::Get();
 	if (Result<void> result = dataChunkMgr.Shutdown(); !result.IsSuccess())
+	{
 		return result;
+	}
 
 	ConfigManager& configMgr = ConfigManager::Get();
 	if (Result<void> result = configMgr.Shutdown(); !result.IsSuccess())
+	{
 		return result;
+	}
 
 	_isInitialized = false;
 	return Result<void>::Success();

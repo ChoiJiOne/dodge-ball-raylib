@@ -30,9 +30,13 @@ GameTimer::GameTimer(const GameTimer& instance) noexcept
 float GameTimer::GetTotalSeconds() const
 {
 	if (_bIsStopped)
+	{
 		return static_cast<float>((_stopTime - _pausedTime) - _baseTime);
+	}
 	else
+	{
 		return static_cast<float>((_currTime - _pausedTime) - _baseTime);
+	}
 }
 
 float GameTimer::GetDeltaSeconds() const
@@ -54,7 +58,9 @@ void GameTimer::Reset()
 void GameTimer::Start()
 {
 	if (!_bIsStopped)
+	{
 		return;
+	}
 
 	double startTime = GetTime();
 
@@ -67,7 +73,9 @@ void GameTimer::Start()
 void GameTimer::Stop()
 {
 	if (_bIsStopped)
+	{
 		return;
+	}
 
 	_stopTime = GetTime();
 	_bIsStopped = true;
@@ -86,5 +94,7 @@ void GameTimer::Tick()
 	_prevTime = _currTime;
 
 	if (_deltaTime < 0.0)
+	{
 		_deltaTime = 0.0;
+	}
 }

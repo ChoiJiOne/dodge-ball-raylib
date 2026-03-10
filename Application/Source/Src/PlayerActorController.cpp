@@ -14,11 +14,15 @@ void PlayerActorController::OnInitialize(IActor* owner)
 
 	Result<BallModel*> result = _ownerActor->GetModel<BallModel>();
 	if (!result.IsSuccess()) // Get이 실패할 수 있을까...?
+	{
 		LOG_E("FAILED_TO_GET_PLAYER_BALL_MODEL"); // 일단 로그를 찍어보자.
+	}
 	else
+	{
 		_model = result.GetValue();
+	}
 
-	_boundDistance = 400.0f;
+	_boundDistance = 500.0f;
 	_leftBoundPosition = _model->GetPosition();
 	_rightBoundPosition = _model->GetPosition();
 
