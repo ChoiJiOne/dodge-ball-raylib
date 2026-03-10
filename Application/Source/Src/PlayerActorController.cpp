@@ -17,6 +17,15 @@ void PlayerActorController::OnInitialize(IActor* owner)
 		LOG_E("FAILED_TO_GET_PLAYER_BALL_MODEL"); // 일단 로그를 찍어보자.
 	else
 		_model = result.GetValue();
+
+	_boundDistance = 400.0f;
+	_leftBoundPosition = _model->GetPosition();
+	_rightBoundPosition = _model->GetPosition();
+
+	_leftBoundPosition.x -= _boundDistance * 0.5f;
+	_rightBoundPosition.x += _boundDistance * 0.5f;
+
+	_model->SetMoveDirection(glm::vec2(1.0f, 0.0f));
 }
 
 void PlayerActorController::OnRelease()
@@ -28,15 +37,28 @@ void PlayerActorController::OnRelease()
 void PlayerActorController::OnTick(float deltaSeconds)
 {
 	glm::vec2 position = _model->GetPosition();
-	if (_inputMgr->GetKeyPress(EKey::LEFT) == EPress::HELD)
-	{
-		position.x -= deltaSeconds * _moveSpeed;
-	}
+	glm::vec2 direction = _model->GetMoveDirection();
+	float speed = _model->GetMoveSpeed();
 
-	if (_inputMgr->GetKeyPress(EKey::RIGHT) == EPress::HELD)
-	{
-		position.x += deltaSeconds * _moveSpeed;
-	}
+	position += direction * deltaSeconds * speed;
+	position = glm::clamp(position, _leftBoundPosition, _rightBoundPosition);
 
 	_model->SetPosition(position);
+
+	if (position.x <= _leftBoundPosition.x)
+	{
+		if (direction.x < 0.0f)
+		{
+			direction.x *= -1.0f;
+			_model->SetMoveDirection(direction);
+		}
+	}
+	else if (position.x >= _rightBoundPosition.x)
+	{
+		if (direction.x > 0.0f)
+		{
+			direction.x *= -1.0f;
+			_model->SetMoveDirection(direction);
+		}
+	}
 }

@@ -6,6 +6,6 @@ BallModel::BallModel()
 	_radius = 30.0f;
 	_color = glm::vec4(1.0f, 0.0f, 0.5f, 1.0f);
 
-	_moveSpeed = 100.0f;
+	_moveSpeed = 500.0f;
 	_moveDirection = glm::vec2(0.0f, 0.0f);
 }
