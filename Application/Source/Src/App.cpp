@@ -5,6 +5,7 @@
 
 #include "App.h"
 #include "EnemyActor.h"
+#include "GameScene.h"
 #include "PlayerActor.h"
 
 App::App() 
@@ -24,23 +25,13 @@ Result<void> App::OnStartup(const AppContext& appCtx)
 		return result;
 	}
 
-	if (Result<PlayerActor*> result = appCtx.GetActorManager()->CreateActor<PlayerActor>("Player"); !result.IsSuccess())
+	SceneManager* sceneMgr = appCtx.GetSceneManager();
+	if (Result<void> result = sceneMgr->RegisterScene<GameScene>(); !result.IsSuccess())
 	{
-		return Result<void>::Fail(result.GetError());
-	}
-	else
-	{
-		_actors.push_back(result.GetValue());
+		return result;
 	}
 
-	if (Result<EnemyActor*> result = appCtx.GetActorManager()->CreateActor<EnemyActor>("Enemy"); !result.IsSuccess())
-	{
-		return Result<void>::Fail(result.GetError());
-	}
-	else
-	{
-		_actors.push_back(result.GetValue());
-	}
+	sceneMgr->Transition<GameScene>();
 
 	return Result<void>::Success();
 }
@@ -56,7 +47,9 @@ void App::OnPreTick(const AppContext& appCtx, float deltaSeconds)
 
 void App::OnTick(const AppContext& appCtx, float deltaSeconds)
 {
-	for (auto& actor : _actors)
+	IScene* currentScene = appCtx.GetSceneManager()->GetCurrentScene();
+	const auto& sceneActorMap = currentScene->GetSceneActorMap();
+	for (const auto& [key, actor] : sceneActorMap)
 	{
 		actor->Tick(deltaSeconds);
 	}
@@ -73,7 +66,10 @@ void App::OnRender(const AppContext& appCtx)
 
 	renderMgr->BeginFrame(0.5f, 0.5f, 0.5f, 1.0f);
 
-	for (auto& actor : _actors)
+	IScene* currentScene = appCtx.GetSceneManager()->GetCurrentScene();
+	const auto& sceneActorMap = currentScene->GetSceneActorMap();
+
+	for (const auto& [key, actor] : sceneActorMap)
 	{
 		const auto& renderableModelMap = actor->GetRenderableModelMap();
 		for (const auto& [key, model] : renderableModelMap)
@@ -81,11 +77,18 @@ void App::OnRender(const AppContext& appCtx)
 			renderMgr->Render(model);
 		}
 	}
-	
+
 	renderMgr->EndFrame();
 }
 
 Result<void> App::OnShutdown(const AppContext& appCtx)
 {
+	SceneManager* sceneMgr = appCtx.GetSceneManager();
+
+	IScene* currentScene = sceneMgr->GetCurrentScene();
+	currentScene->OnExit();
+
+	sceneMgr->UnregisterScene<GameScene>();
+
 	return Result<void>::Success();
 }

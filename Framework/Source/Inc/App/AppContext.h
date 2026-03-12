@@ -38,6 +38,7 @@ public:
 	DataChunkManager* GetDataChunkManager() const { return _dataChunkMgr; }
 	InputManager* GetInputManager() const { return _inputMgr; }
 	RenderManager* GetRenderManager() const { return _renderMgr; }
+	SceneManager* GetSceneManager() const { return _sceneMgr; }
 
 private:
 	ActorManager* _actorMgr = nullptr;
