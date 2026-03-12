@@ -36,7 +36,7 @@ public:
 	}
 
 	template <typename TActor> 
-	Result<TActor*> GetActor(const std::string &key) 
+	Result<TActor*> GetActor(const std::string& key) 
 	{
 		auto iter = _cacheActorMap.find(key);
 		if (iter == _cacheActorMap.end()) 
@@ -51,7 +51,7 @@ public:
 		return Result<TActor*>::Success(actorPtr);
 	}
 
-	void DestroyActor(const std::string &key);
+	void DestroyActor(const std::string& key);
 
 private:
 	friend class IManager<ActorManager>;

@@ -1,5 +1,5 @@
-// Application
 #include "EnemyActor.h"
+#include "EnemySpawnActor.h"
 #include "GameScene.h"
 #include "PlayerActor.h"
 
@@ -10,9 +10,9 @@ Result<void> GameScene::OnEnter()
 		return result;
 	}
 
-	if (Result<void> result = CreateAndAddActor<EnemyActor>("Enemy"); !result.IsSuccess())
+	if (Result<void> result = CreateAndAddActor<EnemySpawnActor>("EnemySpawnActor"); !result.IsSuccess())
 	{
-		return Result<void>::Fail(result.GetError());
+		return result;
 	}
 
 	return Result<void>::Success();
@@ -20,11 +20,7 @@ Result<void> GameScene::OnEnter()
 
 Result<void> GameScene::OnExit()
 {
-	const auto& sceneActorMap = GetSceneActorMap();
-	for (const auto& [key, sceneActor] : sceneActorMap)
-	{
-		DestroyActor(key);
-	}
+	ClearActorMap();
 
 	return Result<void>::Success();
 }

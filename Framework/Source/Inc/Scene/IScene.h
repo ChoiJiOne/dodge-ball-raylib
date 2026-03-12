@@ -18,7 +18,6 @@ public:
 
 	const std::map<std::string, IActor*>& GetSceneActorMap() const { return _sceneActorMap; }
 
-protected:
 	template <typename TActor, typename... Args>
 	Result<void> CreateAndAddActor(const std::string& key, Args&&... args)
 	{
@@ -32,18 +31,44 @@ protected:
 		return Result<void>::Success();
 	}
 
-	void RemoveActor(const std::string& key)
+	// WARN: 이거 외부에서 _sceneActorMap 루프 돌면서 호출하면 안됨. 반드시 하나의 액터에 대해서만 호출해야 함.
+	void RemoveAndDestroyActor(const std::string& key)
 	{
 		auto iter = _sceneActorMap.find(key);
 		if (iter != _sceneActorMap.end())
 		{
 			_sceneActorMap.erase(iter);
 		}
+
+		_actorMgr->DestroyActor(key);
 	}
 
-	void DestroyActor(const std::string& key)
+	template <typename TActor>
+	Result<TActor*> GetActor(const std::string& key)
 	{
-		_actorMgr->DestroyActor(key);
+		auto iter = _sceneActorMap.find(key);
+		if (iter == _sceneActorMap.end())
+		{
+			return Result<TActor*>::Fail(MAKE_ERROR(
+				EErrorCode::NOT_FOUND_ACTOR,
+				std::format("NOT_FOUND_ACTOR:{0}", key)
+			));
+		}
+
+		TActor* actorPtr = reinterpret_cast<TActor*>(iter->second.get());
+		return Result<TActor*>::Success(actorPtr);
+	}
+
+protected:
+	void ClearActorMap()
+	{
+		const auto& sceneActorMap = GetSceneActorMap();
+		for (const auto& [key, sceneActor] : _sceneActorMap)
+		{
+			_actorMgr->DestroyActor(key);
+		}
+
+		_sceneActorMap.clear();
 	}
 
 private:
