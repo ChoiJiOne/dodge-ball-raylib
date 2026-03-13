@@ -22,7 +22,13 @@ void GenerateBallDataChunk()
 
 	BallDataChunk dataChunk;
 	dataChunk.DataPacks = GenerateBallDataPacks(std::format("CSV/{0}.csv", dataName));
-
+	
+	for (std::size_t idx = 0; idx < dataChunk.DataPacks.size(); ++idx)
+	{
+		const BallDataPack& dataPack = dataChunk.DataPacks[idx];
+		dataChunk.NumToIdx.emplace(dataPack.Num, idx);
+	}
+	
 	if (!DataChunkUtils::TrySaveDataChunk(std::format("Resource/{0}.bytes", dataName), dataChunk))
 	{
 		std::cout << std::format("[{0}] Error: Failed to generate data chunk!", dataName) << std::endl;
