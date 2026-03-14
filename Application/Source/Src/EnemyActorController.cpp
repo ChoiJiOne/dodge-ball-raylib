@@ -9,22 +9,15 @@ void EnemyActorController::OnInitialize(IActor* owner)
 {
 	IActorController::OnInitialize(owner);
 
-	Result<BallModel*> result = _ownerActor->GetModel<BallModel>();
-	if (!result.IsSuccess()) // Get이 실패할 수 있을까...?
+	if (Result<BallModel*> result = _ownerActor->GetModel<BallModel>(); !result.IsSuccess())
 	{
-		LOG_E("FAILED_TO_GET_ENEMY_BALL_MODEL"); // 일단 로그를 찍어보자.
+		LOG_E("FAILED_TO_GET_ENEMY_BALL_MODEL");
 		return;
 	}
 	else
 	{
 		_model = result.GetValue();
 	}
-
-	_model->SetPosition(glm::vec2(300.0f, 0.0f));
-	_model->SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-	_model->SetRadius(10.0f);
-	_model->SetMoveSpeed(100.0f);
-	_model->SetMoveDirection(glm::vec2(0.0f, 1.0f));
 }
 
 void EnemyActorController::OnRelease()

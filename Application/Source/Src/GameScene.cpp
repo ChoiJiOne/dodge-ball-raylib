@@ -5,14 +5,14 @@
 
 Result<void> GameScene::OnEnter()
 {
-	if (Result<void> result = CreateAndAddActor<PlayerActor>("Player"); !result.IsSuccess())
+	if (Result<PlayerActor*> result = CreateAndAddActor<PlayerActor>("Player"); !result.IsSuccess())
 	{
-		return result;
+		return Result<void>::Fail(result.GetError());
 	}
 
-	if (Result<void> result = CreateAndAddActor<EnemySpawnActor>("EnemySpawnActor"); !result.IsSuccess())
+	if (Result<EnemySpawnActor*> result = CreateAndAddActor<EnemySpawnActor>("EnemySpawnActor"); !result.IsSuccess())
 	{
-		return result;
+		return Result<void>::Fail(result.GetError());
 	}
 
 	return Result<void>::Success();

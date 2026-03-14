@@ -2,11 +2,13 @@
 
 #include "Actor/IActor.h"
 #include "Utils/LogUtils.h"
+#include "Utils/MathUtils.h"
 #include "Macro/Macro.h"
 #include "Manager/DataChunkManager.h"
 #include "Manager/SceneManager.h"
 #include "Scene/IScene.h"
 
+#include "BallModel.h"
 #include "EnemyActor.h"
 #include "EnemySpawnActorController.h"
 #include "EnemySpawnActorModel.h"
@@ -15,7 +17,7 @@ void EnemySpawnActorController::OnInitialize(IActor* owner)
 {
 	IActorController::OnInitialize(owner);
 
-	if (Result<EnemySpawnActorModel*> result = _ownerActor->GetModel<EnemySpawnActorModel>();  !result.IsSuccess())
+	if (Result<EnemySpawnActorModel*> result = _ownerActor->GetModel<EnemySpawnActorModel>(); !result.IsSuccess())
 	{
 		LOG_E("FAILED_TO_GET_ENEMY_SPAWN_MODEL");
 		return;
@@ -24,24 +26,17 @@ void EnemySpawnActorController::OnInitialize(IActor* owner)
 	{
 		_model = result.GetValue();
 	}
-	
+
 	DataChunkManager& dataChunkMgr = DataChunkManager::Get();
 	if (Result<const BallDataChunk*> result = dataChunkMgr.GetDataChunk<BallDataChunk>(); !result.IsSuccess())
 	{
 		LOG_E("FAILED_TO_GET_BALL_DATA_PACK");
 		return;
 	}
-	else
-	{
-		const BallDataChunk* dataChunk = result.GetValue();
-		for (auto& [num, idx] : dataChunk->NumToIdx)
-		{
 
-		}
-	}
-
-	_leftBoundPosition = glm::vec2(0.0f, -50.0f);
-	_rightBoundPosition = glm::vec2(600.0f, -50.0f);
+	_minXPosition = 0.0f;
+	_maxXPosition = 600.0f;
+	_yPosition = -50.0f;
 }
 
 void EnemySpawnActorController::OnRelease()
@@ -52,7 +47,7 @@ void EnemySpawnActorController::OnRelease()
 void EnemySpawnActorController::OnTick(float deltaSeconds)
 {
 	_timeSinceLastSpawn += deltaSeconds;
-	if (_timeSinceLastSpawn < _spawnTime) 
+	if (_timeSinceLastSpawn < _spawnTime)
 	{
 		return;
 	}
@@ -62,18 +57,67 @@ void EnemySpawnActorController::OnTick(float deltaSeconds)
 
 void EnemySpawnActorController::SpawnEnemyActor()
 {
-	SceneManager& sceneMgr = SceneManager::Get();
+ 	SceneManager& sceneMgr = SceneManager::Get();
 	IScene* currentScene = sceneMgr.GetCurrentScene();
 
 	std::string key = std::format("EnemyActor_{0}", _spawnedCount);
-	Result<void> result = currentScene->CreateAndAddActor<EnemyActor>(std::format("EnemyActor_{0}", _spawnedCount));
+
+	if (Result<EnemyActor*> result = currentScene->CreateAndAddActor<EnemyActor>(key); !result.IsSuccess())
+	{
+		LOG_E("FAILED_TO_CREATE_AND_ADD_ENEMY_ACTOR:(key:{0})", key);
+		return;
+	}
+	else
+	{
+		EnemyActor* enemyActor = result.GetValue();
+		if (Result<BallModel*> result = enemyActor->GetModel<BallModel>(); !result.IsSuccess())
+		{
+			LOG_E("FAILED_TO_GET_BALL_MODEL_FROM_ENEMY_ACTOR:(key:{0})", key);
+			return;
+		}
+		else
+		{
+			BallModel* model = result.GetValue();
+			SetBallModel(model);
+		}
+
+		_enemyActorKeyMap.emplace(key, _spawnedCount);
+		_spawnedCount++;
+		_timeSinceLastSpawn = 0.0f;
+	}
+}
+
+void EnemySpawnActorController::SetBallModel(BallModel* model)
+{
+	DataChunkManager& dataChunkMgr = DataChunkManager::Get();
+	Result<const BallDataChunk*> result = dataChunkMgr.GetDataChunk<BallDataChunk>();
 	if (!result.IsSuccess())
 	{
-		LOG_E("FAILED_TO_CREATE_AND_ADD_ENEMY_ACTOR:(count:{0})", _spawnedCount);
+		LOG_E("FAILED_TO_GET_BALL_DATA_PACK");
 		return;
 	}
 
-	_enemyActorKeyMap.emplace(key, _spawnedCount);
-	_spawnedCount++;
-	_timeSinceLastSpawn = 0.0f;
+	std::size_t dataPackSize = result.GetValue()->DataPacks.size();
+	int32_t randomIdx = MathUtils::GenerateRandomInt(0, dataPackSize - 1);
+	const BallDataPack& dataPack = result.GetValue()->DataPacks[randomIdx];
+
+	glm::vec2 position = glm::vec2(MathUtils::GenerateRandomFloat(_minXPosition, _maxXPosition), _yPosition);
+	glm::vec4 color = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	for (std::size_t idx = 0; idx < 3; ++idx)
+	{
+		if (idx < dataPack.Color.size())
+		{
+			color[idx] = dataPack.Color[idx];
+		}
+		else
+		{
+			color[idx] = 0.0f;
+		}
+	}
+	
+ 	model->SetPosition(position);
+	model->SetColor(color);
+	model->SetRadius(static_cast<float>(dataPack.Size));
+	model->SetMoveSpeed(static_cast<float>(dataPack.Speed));
+	model->SetMoveDirection(glm::vec2(0.0f, 1.0f));
 }

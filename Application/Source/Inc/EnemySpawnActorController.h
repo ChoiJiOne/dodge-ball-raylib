@@ -4,6 +4,7 @@
 
 #include "Actor/IActorController.h"
 
+class BallModel;
 class EnemySpawnActorModel;
 
 class EnemySpawnActorController : public IActorController
@@ -20,16 +21,18 @@ public:
 
 private:
 	void SpawnEnemyActor();
+	void SetBallModel(BallModel* model);
 
 private:
 	EnemySpawnActorModel* _model = nullptr;
 
 	std::map<std::string, int32_t> _enemyActorKeyMap;
 
-	float _spawnTime = 2.0f;
+	float _spawnTime = 1.0f;
 	float _timeSinceLastSpawn = 0.0f;
 	int32_t _spawnedCount = 0;
 
-	glm::vec2 _leftBoundPosition;
-	glm::vec2 _rightBoundPosition;
+	float _minXPosition;
+	float _maxXPosition;
+	float _yPosition;
 };

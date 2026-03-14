@@ -19,16 +19,16 @@ public:
 	const std::map<std::string, IActor*>& GetSceneActorMap() const { return _sceneActorMap; }
 
 	template <typename TActor, typename... Args>
-	Result<void> CreateAndAddActor(const std::string& key, Args&&... args)
+	Result<TActor*> CreateAndAddActor(const std::string& key, Args&&... args)
 	{
 		Result<TActor*> result = _actorMgr->CreateActor<TActor>(key, std::forward<Args>(args)...);
 		if (!result.IsSuccess())
 		{
-			return Result<void>::Fail(result.GetError());
+			return Result<TActor*>::Fail(result.GetError());
 		}
 
 		_sceneActorMap.emplace(key, result.GetValue());
-		return Result<void>::Success();
+		return result;
 	}
 
 	// WARN: 이거 외부에서 _sceneActorMap 루프 돌면서 호출하면 안됨. 반드시 하나의 액터에 대해서만 호출해야 함.
