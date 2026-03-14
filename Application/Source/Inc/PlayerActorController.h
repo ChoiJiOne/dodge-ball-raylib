@@ -29,7 +29,6 @@ private:
 	InputManager* _inputMgr = nullptr;
 	BallModel* _model = nullptr;
 
-	float _boundDistance = 0.0f;
-	glm::vec2 _leftBoundPosition;
-	glm::vec2 _rightBoundPosition;
+	float _moveRangeMinX = 0.0f;
+	float _moveRangeMaxX = 0.0f;
 };

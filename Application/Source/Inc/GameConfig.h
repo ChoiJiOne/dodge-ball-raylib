@@ -12,10 +12,22 @@ public:
 	const int32_t& GetSpawnRangeMaxX() const { return _spawnRangeMaxX; }
 	const int32_t& GetSpawnRangeY() const { return _spawnRangeY; }
 
+	const int32_t& GetPlayerMoveRangeMinX() const { return _playerMoveRangeMinX; }
+	const int32_t& GetPlayerMoveRangeMaxX() const { return _playerMoveRangeMaxX; }
+	const int32_t& GetPlayerMoveRangeY() const { return _playerMoveRangeY; }
+
+	bool IsPlayerStartMovePositive() const { return _isPlayerStartMovePositive; }
+
 	virtual bool TryParse(const YAML::Node& node) override;
 	
 private:
 	int32_t _spawnRangeMinX = 0;
 	int32_t _spawnRangeMaxX = 600;
 	int32_t _spawnRangeY = -50;
+
+	int32_t _playerMoveRangeMinX = 0;
+	int32_t _playerMoveRangeMaxX = 600;
+	int32_t _playerMoveRangeY = 650;
+
+	bool _isPlayerStartMovePositive = true;
 };

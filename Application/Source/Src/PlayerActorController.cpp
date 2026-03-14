@@ -1,9 +1,11 @@
 #include "Actor/IActor.h"
+#include "Manager/ConfigManager.h"
 #include "Manager/InputManager.h"
 #include "Utils/LogUtils.h"
 #include "Macro/Macro.h"
 
 #include "BallModel.h"
+#include "GameConfig.h"
 #include "PlayerActorController.h"
 
 void PlayerActorController::OnInitialize(IActor* owner)
@@ -22,20 +24,34 @@ void PlayerActorController::OnInitialize(IActor* owner)
 	{
 		_model = result.GetValue();
 	}
+	
+	ConfigManager& configMgr = ConfigManager::Get();
+	if (Result<const GameConfig*> result = configMgr.GetConfig<GameConfig>(); !result.IsSuccess())
+	{
+		LOG_E("FAILED_TO_GET_GAME_CONFIG");
+		return;
+	}
+	else
+	{
+		const GameConfig* config = result.GetValue();
+		_moveRangeMinX = static_cast<float>(config->GetPlayerMoveRangeMinX());
+		_moveRangeMaxX = static_cast<float>(config->GetPlayerMoveRangeMaxX());
+		float moveRangeX = (_moveRangeMinX + _moveRangeMaxX) * 0.5f;
+		float moveRangeY = static_cast<float>(config->GetPlayerMoveRangeY());
+		bool isStartMovePositive = config->IsPlayerStartMovePositive();
 
-	// 나중에 위치나 시작 방향은 Config로 뺄 예정.
-	_model->SetPosition(glm::vec2(300.0f, 600.0f));
-	_model->SetColor(glm::vec4(1.0f, 0.0f, 0.5f, 1.0f));
-	_model->SetRadius(10.0f);
-	_model->SetMoveSpeed(500.0f);
-	_model->SetMoveDirection(glm::vec2(1.0f, 0.0f));
+		glm::vec2 position(moveRangeX, moveRangeY);
+		glm::vec4 color(1.0f, 0.0f, 0.5f, 1.0f); // DataPack 기반으로 설정할 예정.
+		float radius = 10.0f; // DataPack 기반으로 설정할 예정.
+		float moveSpeed = 500.0f;  // DataPack 기반으로 설정할 예정.
+		glm::vec2 moveDirection(isStartMovePositive ? +1.0f : -1.0f, 0.0f);
 
-	_boundDistance = 500.0f;
-	_leftBoundPosition = _model->GetPosition();
-	_rightBoundPosition = _model->GetPosition();
-
-	_leftBoundPosition.x -= _boundDistance * 0.5f;
-	_rightBoundPosition.x += _boundDistance * 0.5f;
+		_model->SetPosition(position);
+		_model->SetColor(color);
+		_model->SetRadius(radius);
+		_model->SetMoveSpeed(moveSpeed);
+		_model->SetMoveDirection(moveDirection);
+	}
 }
 
 void PlayerActorController::OnRelease()
@@ -68,7 +84,7 @@ void PlayerActorController::Move(float deltaSeconds)
 	float speed = _model->GetMoveSpeed();
 
 	position += direction * deltaSeconds * speed;
-	position = glm::clamp(position, _leftBoundPosition, _rightBoundPosition);
+	position.x = glm::clamp(position.x, _moveRangeMinX, _moveRangeMaxX);
 
 	_model->SetPosition(position);
 }
@@ -78,8 +94,8 @@ void PlayerActorController::UpdateDirectionByBounds()
 	glm::vec2 position = _model->GetPosition();
 	glm::vec2 direction = _model->GetMoveDirection();
 
-	if ((position.x <= _leftBoundPosition.x && direction.x < 0.0f) ||
-		(position.x >= _rightBoundPosition.x && direction.x > 0.0f))
+	if ((position.x <= _moveRangeMinX && direction.x < 0.0f) ||
+		(position.x >= _moveRangeMaxX && direction.x > 0.0f))
 	{
 		direction.x *= -1.0f;
 		_model->SetMoveDirection(direction);

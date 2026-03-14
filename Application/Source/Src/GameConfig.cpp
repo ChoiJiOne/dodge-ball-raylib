@@ -18,6 +18,26 @@ bool GameConfig::TryParse(const YAML::Node& node)
 	{
 		LOG_E("FAILED_TO_GET_GAME_CONFIG_VALUE(name:{0})", "SpawnRangeY");
 	}
+
+	if (!TryGetValue(node, "PlayerMoveRangeMinX", _playerMoveRangeMinX))
+	{
+		LOG_E("FAILED_TO_GET_GAME_CONFIG_VALUE(name:{0})", "PlayerMoveRangeMinX");
+	}
+
+	if (!TryGetValue(node, "PlayerMoveRangeMaxX", _playerMoveRangeMaxX))
+	{
+		LOG_E("FAILED_TO_GET_GAME_CONFIG_VALUE(name:{0})", "PlayerMoveRangeMaxX");
+	}
+
+	if (!TryGetValue(node, "PlayerMoveRangeY", _playerMoveRangeY))
+	{
+		LOG_E("FAILED_TO_GET_GAME_CONFIG_VALUE(name:{0})", "PlayerMoveRangeY");
+	}
+
+	if (!TryGetValue(node, "IsPlayerStartMovePositive", _isPlayerStartMovePositive))
+	{
+		LOG_E("FAILED_TO_GET_GAME_CONFIG_VALUE(name:{0})", "IsPlayerStartMovePositive");
+	}
 	
 	// CHECKME: 이거 위에 실패해도 무조건 true 반환하는데, 이거 맞는지 확인 필요...!
 	return true;

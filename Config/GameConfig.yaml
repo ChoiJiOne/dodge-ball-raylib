@@ -1,3 +1,7 @@
 SpawnRangeMinX: -10
 SpawnRangeMaxX: 610
 SpawnRangeY: -100
+PlayerMoveRangeMinX: -10
+PlayerMoveRangeMaxX: 610
+PlayerMoveRangeY: 650 
+IsPlayerStartMovePositive: true
