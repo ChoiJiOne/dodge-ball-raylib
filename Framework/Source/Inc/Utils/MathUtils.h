@@ -30,4 +30,7 @@ public:
 			static_cast<unsigned char>(colorVec.a * 255.0f)
 		};
 	}
+
+	static int32_t GenerateRandomInt(int32_t minValue, int32_t maxValue); // [minValue, maxValue]
+	static float GenerateRandomFloat(float minValue, float maxValue); // [minValue, maxValue)
 };
